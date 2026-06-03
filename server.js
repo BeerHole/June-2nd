@@ -3,7 +3,7 @@ const express = require('express');
 const Stripe = require('stripe');
 const path = require('path');
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = process.env.STRIPE_SECRET_KEY ? Stripe(process.env.STRIPE_SECRET_KEY) : null;
 const app = express();
 
 app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
