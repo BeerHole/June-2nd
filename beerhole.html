@@ -28,6 +28,7 @@
 
     .hero{
       min-height:100vh;
+      padding-top:160px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -365,13 +366,12 @@
       justify-content:flex-start;
       gap:30px;
       padding:18px 8%;
-      background:transparent;
-      transition:background .4s, box-shadow .4s, padding .4s;
+      background:rgba(255,248,231,0.97);
+      box-shadow:0 2px 20px rgba(0,0,0,.15);
+      transition:padding .4s;
     }
 
     nav.scrolled{
-      background:rgba(255,248,231,0.97);
-      box-shadow:0 2px 20px rgba(0,0,0,.15);
       padding:12px 8%;
     }
 
@@ -385,7 +385,7 @@
 
     .nav-account, .nav-cart{
       text-decoration:none;
-      color:#fff;
+      color:#1a1a1a;
       display:inline-flex;
       align-items:center;
       position:relative;
@@ -433,14 +433,10 @@
 
 
     .nav-logo img{
-      height:165px;
+      height:55px;
       width:auto;
       filter:drop-shadow(0 0 8px rgba(255,174,0,.5));
-      transition:filter .3s, height .4s ease;
-    }
-
-    nav.scrolled .nav-logo img{
-      height:55px;
+      transition:filter .3s;
     }
 
     .nav-logo img:hover{
@@ -454,7 +450,7 @@
     }
 
     .nav-links a{
-      color:#fff;
+      color:#1a1a1a;
       text-decoration:none;
       font-weight:700;
       font-size:1.4rem;
@@ -585,6 +581,33 @@
       .hero p,
       .cta p{
         font-size:1rem;
+      }
+
+      /* ── Mobile Navbar ── */
+      nav{
+        padding:12px 5%;
+        gap:12px;
+      }
+
+      .nav-links{
+        gap:14px;
+      }
+
+      .nav-links a{
+        font-size:0.85rem;
+      }
+
+      .nav-actions{
+        gap:10px;
+      }
+
+      .nav-actions svg{
+        width:20px;
+        height:20px;
+      }
+
+      .nav-logo img{
+        height:40px;
       }
 
     }
