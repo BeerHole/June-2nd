@@ -201,21 +201,40 @@
       50%{ transform:translateX(6px); opacity:1; }
     }
 
-    .feature-grid{
-      display:flex;
-      flex-direction:row;
-      gap:20px;
-      overflow-x:auto;
-      cursor:grab;
-      padding-bottom:10px;
+    .feature-grid-wrap{
+      overflow-x: scroll;
+      overflow-y: hidden;
+      cursor: grab;
+      padding-bottom: 10px;
+      scrollbar-width: none;
     }
 
-    .feature-grid:active{
-      cursor:grabbing;
+    .feature-grid-wrap::-webkit-scrollbar{
+      display: none;
+    }
+
+    #rules-wrap{
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      overscroll-behavior-x: none;
+    }
+    #rules-wrap::-webkit-scrollbar{ display: none; }
+    #rules-grid .feature-card:last-child{ margin-right: 0; }
+
+    .feature-grid-wrap:active{
+      cursor: grabbing;
+    }
+
+    .feature-grid{
+      display: flex;
+      flex-direction: row;
+      width: max-content;
     }
 
     .feature-grid .feature-card{
-      flex:0 0 500px;
+      flex: 0 0 500px;
+      margin-right: 20px;
     }
 
     .feature-card{
@@ -717,48 +736,40 @@
 
   <section class="features">
 
-    <div class="feature-grid">
+    <div class="feature-grid-wrap" id="feat-wrap">
+      <div class="feature-grid" id="feat-grid">
 
-      <div class="feature-card">
-        <h3>🍻 Instant Party Starter</h3>
-        <p>
-          Nobody stands around awkwardly. BeerHole turns every backyard,
-          tailgate, and pregame into a competition.
-        </p>
+        <!-- Original cards -->
+        <div class="feature-card"><h3>🍻 Instant Party Starter</h3><p>Nobody stands around awkwardly. BeerHole turns every backyard, tailgate, and pregame into a competition.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🔥 Viral Energy</h3><p>The kind of game people post on TikTok, Instagram, and Snapchat all night long.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🎯 Easy To Learn</h3><p>Toss. Score. Drink. Repeat. It takes under 60 seconds to start playing.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🏆 Be The Trendsetter</h3><p>Your friends already have pong and cornhole. Be the first crew to own BeerHole.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
+        <!-- Duplicate set 2 -->
+        <div class="feature-card"><h3>🍻 Instant Party Starter</h3><p>Nobody stands around awkwardly. BeerHole turns every backyard, tailgate, and pregame into a competition.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🔥 Viral Energy</h3><p>The kind of game people post on TikTok, Instagram, and Snapchat all night long.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🎯 Easy To Learn</h3><p>Toss. Score. Drink. Repeat. It takes under 60 seconds to start playing.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🏆 Be The Trendsetter</h3><p>Your friends already have pong and cornhole. Be the first crew to own BeerHole.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
+        <!-- Duplicate set 3 -->
+        <div class="feature-card"><h3>🍻 Instant Party Starter</h3><p>Nobody stands around awkwardly. BeerHole turns every backyard, tailgate, and pregame into a competition.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🔥 Viral Energy</h3><p>The kind of game people post on TikTok, Instagram, and Snapchat all night long.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🎯 Easy To Learn</h3><p>Toss. Score. Drink. Repeat. It takes under 60 seconds to start playing.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>🏆 Be The Trendsetter</h3><p>Your friends already have pong and cornhole. Be the first crew to own BeerHole.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
       </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
-      <div class="feature-card">
-        <h3>🔥 Viral Energy</h3>
-        <p>
-          The kind of game people post on TikTok, Instagram,
-          and Snapchat all night long.
-        </p>
-      </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
-      <div class="feature-card">
-        <h3>🎯 Easy To Learn</h3>
-        <p>
-          Toss. Score. Drink. Repeat.
-          It takes under 60 seconds to start playing.
-        </p>
-      </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
-      <div class="feature-card">
-        <h3>🏆 Be The Trendsetter</h3>
-        <p>
-          Your friends already have pong and cornhole.
-          Be the first crew to own BeerHole.
-        </p>
-      </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
     </div>
 
     <div class="swipe-hint">
@@ -829,58 +840,18 @@
       <h2>HOW TO PLAY</h2>
     </div>
 
-    <div class="feature-grid" id="rules-grid">
+    <div class="feature-grid-wrap" id="rules-wrap">
+      <div class="feature-grid" id="rules-grid">
 
-      <div class="rule-step feature-card">
-        <div class="step-number">⚠</div>
-        <h3>Disclaimer</h3>
-        <ul>
-          <li><strong>House Rules:</strong> Rules may vary depending on who is playing. Generally, the local "house rules" established by the host or venue prior to starting the game are what should be followed.</li>
-        </ul>
-        <img src="https://images.unsplash.com/photo-1610431205421-739e027cc0ce?w=500&auto=format&fit=crop" alt="Warning" style="width:100%; border-radius:12px; margin-top:20px; object-fit:cover;">
+        <div class="rule-step feature-card"><div class="step-number">⚠</div><h3>Disclaimer</h3><ul><li><strong>House Rules:</strong> Rules may vary depending on who is playing. Generally, the local "house rules" established by the host or venue prior to starting the game are what should be followed.</li></ul><img src="https://images.unsplash.com/photo-1610431205421-739e027cc0ce?w=500&auto=format&fit=crop" alt="Warning" style="width:100%; border-radius:12px; margin-top:20px; object-fit:cover;"></div>
+        <div class="rule-step feature-card"><div class="step-number">1</div><h3>Equipment & Setup</h3><ul><li><strong>Boards:</strong> Place two Beerhole Boards across from one another.</li><li><strong>Holes:</strong> Utilize the 10 permanent holes built into each board.</li><li><strong>Bags:</strong> Provide each team with two small bean bags for tossing.</li><li><strong>Discs:</strong> Keep 10 scoring discs per board nearby to cover the holes.</li><li><strong>Drinks:</strong> Players keep their own personal beverages on the side.</li><li><strong>Teams:</strong> Play with two teams, usually two players each.</li></ul></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="rule-step feature-card"><div class="step-number">2</div><h3>Gameplay Rules</h3><ul><li><strong>First Turn:</strong> Determine who tosses first via Rock-Paper-Scissors or "Eye-to-Eye".</li><li><strong>Turn Structure:</strong> Each team member tosses one bag per turn — two total tosses per team.</li><li><strong>Foul Line:</strong> Players must keep feet behind the front edge of their own board when tossing.</li><li><strong>Covering Holes:</strong> When a bag lands in a hole, the defending team places a disc over it and takes a drink.</li><li><strong>Bag Returns:</strong> If both players make their tosses in the same turn, they get the bags back and receive two bonus tosses.</li></ul></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1569937728190-3bc2d87330f5?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="rule-step feature-card"><div class="step-number">3</div><h3>Specialized Mechanics</h3><ul><li><strong>Re-racking:</strong> Since holes are permanently fixed, teams can strategically leave certain holes uncovered during scoring adjustments to simulate standard re-rack formations.</li><li><strong>Teammate Assists:</strong> If a bag sits on the rim of an uncovered hole, the second teammate can knock it in with their own toss.</li><li><strong>Redemption:</strong> Once a team covers all 10 holes, the losing team gets one final turn to toss until they miss.</li></ul></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://plus.unsplash.com/premium_photo-1668376544909-860bba2ef93b?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
       </div>
-
-      <div class="rule-step feature-card">
-        <div class="step-number">1</div>
-        <h3>Equipment & Setup</h3>
-        <ul>
-          <li><strong>Boards:</strong> Place two Beerhole Boards across from one another.</li>
-          <li><strong>Holes:</strong> Utilize the 10 permanent holes built into each board.</li>
-          <li><strong>Bags:</strong> Provide each team with two small bean bags for tossing.</li>
-          <li><strong>Discs:</strong> Keep 10 scoring discs per board nearby to cover the holes.</li>
-          <li><strong>Drinks:</strong> Players keep their own personal beverages on the side.</li>
-          <li><strong>Teams:</strong> Play with two teams, usually two players each.</li>
-        </ul>
-      </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
-      <div class="rule-step feature-card">
-        <div class="step-number">2</div>
-        <h3>Gameplay Rules</h3>
-        <ul>
-          <li><strong>First Turn:</strong> Determine who tosses first via Rock-Paper-Scissors or "Eye-to-Eye" (tossing while looking directly into an opponent's eyes).</li>
-          <li><strong>Turn Structure:</strong> Each team member tosses one bag per turn — two total tosses per team.</li>
-          <li><strong>Foul Line:</strong> Players must keep feet behind the front edge of their own board when tossing.</li>
-          <li><strong>Covering Holes:</strong> When a bag lands in a hole, the defending team places a disc over it and takes a drink.</li>
-          <li><strong>Bag Returns:</strong> If both players make their tosses in the same turn, they get the bags back and receive two bonus tosses.</li>
-        </ul>
-      </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1569937728190-3bc2d87330f5?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
-      <div class="rule-step feature-card">
-        <div class="step-number">3</div>
-        <h3>Specialized Mechanics</h3>
-        <ul>
-          <li><strong>Re-racking:</strong> Since holes are permanently fixed, teams can strategically leave certain holes uncovered during scoring adjustments to simulate standard re-rack formations.</li>
-          <li><strong>Teammate Assists:</strong> If a bag sits on the rim of an uncovered hole, the second teammate can knock it in with their own toss.</li>
-          <li><strong>Redemption:</strong> Once a team covers all 10 holes, the losing team gets one final turn to toss until they miss. Cover all remaining holes and you stay alive — game continues until one team misses a rebuttal.</li>
-        </ul>
-      </div>
-
-      <div class="feature-card feature-card--blank" style="background-image:url('https://plus.unsplash.com/premium_photo-1668376544909-860bba2ef93b?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
-
     </div>
 
   </section>
@@ -912,18 +883,156 @@
       navbar.classList.toggle('scrolled', window.scrollY > 50);
     });
 
-    // Drag to scroll any feature-grid
-    document.querySelectorAll('.feature-grid').forEach(grid => {
-      let isDown = false, startX, scrollLeft;
-      grid.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - grid.offsetLeft; scrollLeft = grid.scrollLeft; });
-      grid.addEventListener('mouseleave', () => isDown = false);
-      grid.addEventListener('mouseup', () => isDown = false);
-      grid.addEventListener('mousemove', e => {
+    // Seamless card-by-card scroll (3 sets of cards)
+    const featWrap = document.getElementById('feat-wrap');
+    if (featWrap) {
+      const CARD_WIDTH = 520;
+      const NUM_CARDS = 8;
+      const loopWidth = CARD_WIDTH * NUM_CARDS;
+      const SLIDE_DURATION = 900; // ms for slide animation
+      const PAUSE_BETWEEN = 2500; // ms to pause on each card
+
+      let paused = false;
+      let pauseTimer = null;
+      let animating = false;
+
+      // Start at set 2 so user can swipe both directions
+      featWrap.scrollLeft = loopWidth;
+
+      function pauseFor8s() {
+        paused = true;
+        clearTimeout(pauseTimer);
+        pauseTimer = setTimeout(() => { paused = false; }, 8000);
+      }
+
+      // Pause on ANY user interaction with the cards
+      ['mousedown','mousemove','touchstart','touchmove','touchend','wheel'].forEach(evt => {
+        featWrap.addEventListener(evt, pauseFor8s, { passive: true });
+      });
+
+      // Mouse drag
+      let isDown = false, startX, startScroll;
+      featWrap.addEventListener('mousedown', e => {
+        isDown = true;
+        startX = e.pageX - featWrap.offsetLeft;
+        startScroll = featWrap.scrollLeft;
+      });
+      window.addEventListener('mouseup', () => isDown = false);
+      featWrap.addEventListener('mousemove', e => {
         if (!isDown) return;
         e.preventDefault();
-        grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX);
+        const walked = e.pageX - featWrap.offsetLeft - startX;
+        let next = startScroll - walked;
+        if (next < 0) next += loopWidth;
+        if (next > loopWidth * 2) next -= loopWidth;
+        featWrap.scrollLeft = next;
       });
-    });
+
+      // Smooth slide to next card — seamless loop
+      function slideToNext() {
+        if (paused || animating) return;
+
+        // Silent reposition BEFORE animating — always stay in set 2
+        // so we always have a full set ahead to animate into
+        if (featWrap.scrollLeft >= loopWidth * 1.5) {
+          featWrap.scrollLeft -= loopWidth;
+        }
+
+        animating = true;
+        const start = featWrap.scrollLeft;
+        const target = start + CARD_WIDTH;
+        const startTime = performance.now();
+
+        function animate(now) {
+          if (paused) { animating = false; return; }
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / SLIDE_DURATION, 1);
+          const ease = progress < 0.5
+            ? 2 * progress * progress
+            : -1 + (4 - 2 * progress) * progress;
+
+          featWrap.scrollLeft = start + (target - start) * ease;
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            featWrap.scrollLeft = target;
+            animating = false;
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      setInterval(slideToNext, PAUSE_BETWEEN);
+    }
+
+    // Rules section — simple native scroll + auto-advance
+    (function() {
+      const wrap = document.getElementById('rules-wrap');
+      if (!wrap) return;
+
+      const CARD_WIDTH = 520;
+      const NUM_CARDS = 7;
+      const SLIDE_DURATION = 900;
+      const PAUSE_BETWEEN = 5000;
+
+      let currentIndex = 0;
+      let paused = false;
+      let pauseTimer = null;
+      let animating = false;
+
+      function pause8s() {
+        paused = true;
+        clearTimeout(pauseTimer);
+        pauseTimer = setTimeout(() => { paused = false; }, 8000);
+      }
+
+      // Pause on any user interaction
+      ['mousedown','mousemove','touchstart','touchmove','touchend','wheel'].forEach(evt => {
+        wrap.addEventListener(evt, pause8s, { passive: true });
+      });
+
+      // Mouse drag — clamped so user can't scroll past last card
+      const getMaxScroll = () => (NUM_CARDS * CARD_WIDTH) - wrap.clientWidth;
+
+      let isDown = false, startX, startScroll;
+      wrap.addEventListener('mousedown', e => {
+        isDown = true;
+        startX = e.pageX - wrap.offsetLeft;
+        startScroll = wrap.scrollLeft;
+      });
+      window.addEventListener('mouseup', () => isDown = false);
+      wrap.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const next = startScroll - (e.pageX - wrap.offsetLeft - startX);
+        wrap.scrollLeft = Math.min(Math.max(next, 0), getMaxScroll());
+      });
+
+      // Auto-advance card by card
+      function animateTo(target) {
+        animating = true;
+        const start = wrap.scrollLeft;
+        const t0 = performance.now();
+        function step(now) {
+          if (paused) { animating = false; return; }
+          const p = Math.min((now - t0) / SLIDE_DURATION, 1);
+          const ease = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
+          wrap.scrollLeft = start + (target - start) * ease;
+          if (p < 1) requestAnimationFrame(step);
+          else { wrap.scrollLeft = target; animating = false; }
+        }
+        requestAnimationFrame(step);
+      }
+
+      function slideNext() {
+        if (paused || animating) return;
+        currentIndex = (currentIndex + 1) % NUM_CARDS;
+        animateTo(currentIndex * CARD_WIDTH);
+      }
+
+      setInterval(slideNext, PAUSE_BETWEEN);
+    })();
 
     // Cycle through hero videos
     const videos = [
