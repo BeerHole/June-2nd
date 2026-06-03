@@ -168,6 +168,39 @@
       background:#161616;
     }
 
+    .swipe-hint{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:24px;
+      color:#888;
+      font-size:.85rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:2px;
+    }
+
+    .swipe-arrow{
+      display:flex;
+      gap:2px;
+    }
+
+    .swipe-arrow svg:first-child{
+      opacity:0.4;
+      animation:swipeAnim 1.2s ease-in-out infinite;
+    }
+
+    .swipe-arrow svg:last-child{
+      opacity:0.8;
+      animation:swipeAnim 1.2s ease-in-out infinite 0.2s;
+    }
+
+    @keyframes swipeAnim{
+      0%, 100%{ transform:translateX(0); opacity:0.3; }
+      50%{ transform:translateX(6px); opacity:1; }
+    }
+
     .feature-grid{
       display:flex;
       flex-direction:row;
@@ -727,6 +760,15 @@
       <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
 
     </div>
+
+    <div class="swipe-hint">
+      <span>Swipe to explore</span>
+      <div class="swipe-arrow">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ffb300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </div>
+
   </section>
 
   <section class="party-section" id="about">
