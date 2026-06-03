@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Montserrat',sans-serif;
+      background:#0a0a0a;
+      color:white;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(245,240,230,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      border-bottom-color:#ff6a00;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Page Header ── */
+    .shop-header{
+      padding:140px 8% 60px;
+      text-align:center;
+    }
+
+    .shop-header h1{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:5rem;
+      color:#ffb300;
+      letter-spacing:3px;
+      margin-bottom:14px;
+    }
+
+    .shop-header p{
+      color:#aaa;
+      font-size:1.1rem;
+      max-width:500px;
+      margin:0 auto;
+      line-height:1.7;
+    }
+
+    /* ── Product Grid ── */
+    .shop-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:30px;
+      padding:0 8% 100px;
+      max-width:1300px;
+      margin:0 auto;
+    }
+
+    .product-card{
+      background:#1a1a1a;
+      border-radius:20px;
+      overflow:hidden;
+      transition:transform .25s ease;
+      border:1px solid rgba(255,255,255,.06);
+      text-decoration:none;
+      color:inherit;
+      display:block;
+    }
+
+    .product-card:hover{
+      transform:translateY(-8px);
+      border-color:#ffb300;
+    }
+
+    .product-card img{
+      width:100%;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      display:block;
+    }
+
+    .product-card-body{
+      padding:20px 22px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .product-card-name{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.5rem;
+      font-weight:800;
+      color:#fff;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .product-card-price{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.4rem;
+      font-weight:700;
+      color:#ffb300;
+    }
+
+    .product-card-desc{
+      padding:8px 22px 20px;
+      color:#999;
+      font-size:.9rem;
+      line-height:1.6;
+    }
+
+    .product-card-btn{
+      display:block;
+      margin:0 22px 22px;
+      padding:14px;
+      background:linear-gradient(45deg,#ff6a00,#ffcc00);
+      color:#fff;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.1rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      transition:opacity .2s;
+      text-align:center;
+    }
+
+    .product-card:hover .product-card-btn{
+      opacity:.88;
+    }
+
+    /* ── Footer ── */
+    footer{
+      background:black;
+      text-align:center;
+      padding:30px;
+      color:#aaa;
+      font-size:.9rem;
+    }
+
+    @media(max-width:600px){
+      .shop-header h1{ font-size:3.5rem; }
+      .shop-grid{ padding:0 5% 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="beerhole.html#rules">Rules</a></li>
+      <li><a href="beerhole.html#about">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="shop-header">
+    <h1>Shop</h1>
+  </div>
+
+  <div class="shop-grid">
+
+    <a href="complete-set.html" class="product-card">
+      <img src="https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop" alt="Complete Set">
+      <div class="product-card-body">
+        <span class="product-card-name">Complete Set</span>
+        <span class="product-card-price">$399.99</span>
+      </div>
+      <p class="product-card-desc">Everything you need to play — boards, bags, discs, and carry bag included.</p>
+      <div class="product-card-btn">View Product</div>
+    </a>
+
+    <a href="extra-bags.html" class="product-card">
+      <img src="https://images.unsplash.com/photo-1602632003094-0494b73b7c4a?w=600&auto=format&fit=crop" alt="Extra Bags">
+      <div class="product-card-body">
+        <span class="product-card-name">Extra Bags</span>
+        <span class="product-card-price">$19.99</span>
+      </div>
+      <p class="product-card-desc">Regulation-sized bean bags built for consistent tossing and outdoor durability.</p>
+      <div class="product-card-btn">View Product</div>
+    </a>
+
+    <a href="merch.html" class="product-card">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop" alt="Merch">
+      <div class="product-card-body">
+        <span class="product-card-name">Merch</span>
+        <span class="product-card-price">$49.99</span>
+      </div>
+      <p class="product-card-desc">Rep BeerHole at every party. Premium apparel for people who play hard.</p>
+      <div class="product-card-btn">View Product</div>
+    </a>
+
+  </div>
+
+  <footer>© 2026 BeerHole — Built For Backyard Legends 🍻</footer>
+
+</body>
+</html>

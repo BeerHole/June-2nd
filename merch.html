@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Merch — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    body{ font-family:'Montserrat',sans-serif; background:#0a0a0a; color:white; }
+    nav{ position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; gap:30px; padding:18px 5%; background:rgba(245,240,230,0.97); box-shadow:0 2px 12px rgba(0,0,0,.15); }
+    .nav-logo img{ height:55px; display:block; }
+    .nav-links{ display:flex; gap:24px; list-style:none; }
+    .nav-links a{ color:#1a1a1a; text-decoration:none; font-weight:700; font-size:1rem; text-transform:uppercase; letter-spacing:1px; padding-bottom:3px; border-bottom:2px solid transparent; transition:.2s; }
+    .nav-links a:hover{ border-bottom-color:#ff6a00; }
+    .nav-actions{ list-style:none; display:flex; gap:18px; margin-left:auto; align-items:center; }
+    .nav-actions a{ color:#1a1a1a; display:flex; align-items:center; transition:.2s; }
+    .nav-actions a:hover{ opacity:.6; }
+    .product-page{ max-width:1100px; margin:0 auto; padding:140px 5% 80px; display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start; }
+    .product-gallery{ position:sticky; top:100px; }
+    .product-gallery img{ width:100%; border-radius:20px; object-fit:cover; aspect-ratio:1/1; }
+    .breadcrumb{ font-size:.85rem; color:#888; margin-bottom:20px; text-transform:uppercase; letter-spacing:1px; }
+    .breadcrumb a{ color:#888; text-decoration:none; }
+    .breadcrumb a:hover{ color:#ffb300; }
+    .product-name{ font-family:'Bebas Neue',sans-serif; font-size:4rem; color:#fff; letter-spacing:2px; line-height:1; margin-bottom:16px; }
+    .product-price{ font-family:'Barlow Condensed',sans-serif; font-size:2.2rem; font-weight:700; color:#ffb300; margin-bottom:30px; }
+    .product-description{ font-size:1rem; color:#ccc; line-height:1.8; margin-bottom:30px; }
+    .includes-title{ font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; color:#fff; margin-bottom:14px; }
+    .includes-list{ list-style:none; margin-bottom:36px; }
+    .includes-list li{ padding:10px 0; border-bottom:1px solid rgba(255,255,255,.08); color:#ddd; font-size:.95rem; line-height:1.6; display:flex; gap:10px; }
+    .includes-list li::before{ content:'✓'; color:#ffb300; font-weight:900; flex-shrink:0; }
+    .in-stock{ display:inline-block; background:rgba(0,200,100,.15); color:#00c864; font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; padding:6px 14px; border-radius:50px; border:1px solid rgba(0,200,100,.3); margin-bottom:28px; }
+    .buy-btn{ display:block; width:100%; padding:18px; background:linear-gradient(45deg,#ff6a00,#ffcc00); color:white; font-family:'Barlow Condensed',sans-serif; font-size:1.3rem; font-weight:800; text-transform:uppercase; letter-spacing:2px; border:none; border-radius:14px; cursor:pointer; transition:.25s; box-shadow:0 8px 24px rgba(255,140,0,.35); }
+    .buy-btn:hover{ transform:translateY(-3px); box-shadow:0 12px 30px rgba(255,140,0,.5); }
+    .back-link{ display:inline-block; margin-top:20px; color:#888; font-size:.9rem; text-decoration:none; text-transform:uppercase; letter-spacing:1px; }
+    .back-link:hover{ color:#ffb300; }
+    @media(max-width:700px){ .product-page{ grid-template-columns:1fr; padding-top:110px; } .product-gallery{ position:static; } .product-name{ font-size:3rem; } }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="beerhole.html#shop">Shop</a></li>
+      <li><a href="beerhole.html#rules">Rules</a></li>
+      <li><a href="beerhole.html#about">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="product-page">
+
+    <div class="product-gallery">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&auto=format&fit=crop" alt="BeerHole Merch">
+    </div>
+
+    <div class="product-info">
+      <p class="breadcrumb"><a href="beerhole.html">Home</a> / <a href="beerhole.html#shop">Shop</a> / Merch</p>
+      <h1 class="product-name">Merch</h1>
+      <p class="product-price">$49.99</p>
+      <span class="in-stock">● In Stock</span>
+      <p class="product-description">
+        Rep BeerHole at every party, tailgate, and backyard hangout. Premium streetwear-inspired apparel built for people who play hard and look good doing it.
+      </p>
+      <p class="includes-title">Details</p>
+      <ul class="includes-list">
+        <li>Premium heavyweight cotton construction</li>
+        <li>BeerHole logo print front and back</li>
+        <li>Available in multiple colorways</li>
+        <li>Unisex sizing — runs true to size</li>
+      </ul>
+      <form action="/create-checkout-session" method="POST">
+        <button type="submit" class="buy-btn">Order Now — $49.99</button>
+      </form>
+      <a href="beerhole.html#shop" class="back-link">← Back to Shop</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
