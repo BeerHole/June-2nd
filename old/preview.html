@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BeerHole | The Ultimate Backyard Party Game</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:'Montserrat',sans-serif;
+      background:#0a0a0a;
+      color:white;
+      overflow-x:hidden;
+    }
+
+    section{
+      padding:80px 8%;
+    }
+
+    .hero{
+      min-height:100vh;
+      background:
+        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?q=80&w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
+    }
+
+    .hero-content{
+      max-width:900px;
+      animation:fadeUp 1s ease;
+    }
+
+    .badge{
+      display:inline-block;
+      background:#ffae00;
+      color:black;
+      padding:12px 22px;
+      border-radius:50px;
+      font-weight:800;
+      margin-bottom:25px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      box-shadow:0 0 20px rgba(255,174,0,.5);
+    }
+
+    h1{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:7rem;
+      line-height:0.9;
+      letter-spacing:3px;
+      margin-bottom:25px;
+      color:#ffb300;
+      text-shadow:0 0 20px rgba(255,140,0,.5);
+    }
+
+    .hero p{
+      font-size:1.3rem;
+      line-height:1.7;
+      color:#f5f5f5;
+      margin-bottom:40px;
+    }
+
+    .buttons{
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      padding:18px 35px;
+      border:none;
+      border-radius:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:.3s;
+      font-size:1rem;
+    }
+
+    .btn-primary{
+      background:linear-gradient(45deg,#ff6a00,#ffcc00);
+      color:white;
+      box-shadow:0 10px 25px rgba(255,140,0,.4);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-5px) scale(1.03);
+    }
+
+    .btn-secondary{
+      background:transparent;
+      border:2px solid #fff;
+      color:white;
+    }
+
+    .btn-secondary:hover{
+      background:white;
+      color:black;
+    }
+
+    .logo-section{
+      background:#111;
+      text-align:center;
+    }
+
+    .logo-section img{
+      width:320px;
+      max-width:90%;
+      filter:drop-shadow(0 0 25px rgba(255,174,0,.5));
+    }
+
+    .section-title{
+      text-align:center;
+      margin-bottom:60px;
+    }
+
+    .section-title h2{
+      font-family:'Bebas Neue';
+      font-size:4rem;
+      color:#ffb300;
+      letter-spacing:2px;
+    }
+
+    .features{
+      background:#161616;
+    }
+
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:30px;
+    }
+
+    .feature-card{
+      background:#1f1f1f;
+      padding:40px 30px;
+      border-radius:25px;
+      transition:.3s;
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .feature-card:hover{
+      transform:translateY(-10px);
+      background:#262626;
+      border-color:#ffb300;
+    }
+
+    .feature-card h3{
+      color:#ffb300;
+      margin-bottom:15px;
+      font-size:1.5rem;
+    }
+
+    .feature-card p{
+      color:#ddd;
+      line-height:1.7;
+    }
+
+    .party-section{
+      background:
+        linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+      text-align:center;
+    }
+
+    .party-section h2{
+      font-family:'Bebas Neue';
+      font-size:5rem;
+      margin-bottom:20px;
+      color:#fff;
+    }
+
+    .party-section p{
+      max-width:800px;
+      margin:auto;
+      line-height:1.8;
+      font-size:1.2rem;
+      color:#f0f0f0;
+    }
+
+    .social-proof{
+      background:#101010;
+    }
+
+    .quotes{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:25px;
+    }
+
+    .quote{
+      background:#1c1c1c;
+      padding:30px;
+      border-radius:20px;
+      border-left:5px solid #ffb300;
+    }
+
+    .quote p{
+      font-style:italic;
+      line-height:1.7;
+      margin-bottom:15px;
+    }
+
+    .quote span{
+      color:#ffb300;
+      font-weight:700;
+    }
+
+    .cta{
+      background:linear-gradient(45deg,#ff6a00,#ffb300);
+      text-align:center;
+      color:white;
+    }
+
+    .cta h2{
+      font-family:'Bebas Neue';
+      font-size:5rem;
+      margin-bottom:20px;
+    }
+
+    .cta p{
+      font-size:1.3rem;
+      max-width:700px;
+      margin:0 auto 35px;
+      line-height:1.7;
+    }
+
+    footer{
+      background:black;
+      text-align:center;
+      padding:30px;
+      color:#aaa;
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media(max-width:768px){
+
+      h1{
+        font-size:4.5rem;
+      }
+
+      .section-title h2,
+      .party-section h2,
+      .cta h2{
+        font-size:3rem;
+      }
+
+      .hero p,
+      .cta p{
+        font-size:1rem;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-content">
+
+      <div class="badge">
+        🔥 The Backyard Game Every Party Wants
+      </div>
+
+      <h1>BE THE FIRST<br>TO BRING<br>BEERHOLE</h1>
+
+      <p>
+        BeerHole is the insanely fun party game built for tailgates,
+        backyard parties, frat houses, beach days, and college weekends.
+        Sink the shot. Hit the holes. Own the party.
+      </p>
+
+      <div class="buttons">
+        <button class="btn btn-primary">Order Yours Now</button>
+        <button class="btn btn-secondary">Watch Gameplay</button>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="logo-section">
+    <img src="ChatGPT Image May 18, 2026 at 05_34_55 PM.png" alt="BeerHole Logo">
+  </section>
+
+  <section class="features">
+    <div class="section-title">
+      <h2>WHY EVERYONE WANTS IT</h2>
+    </div>
+
+    <div class="feature-grid">
+
+      <div class="feature-card">
+        <h3>🍻 Instant Party Starter</h3>
+        <p>
+          Nobody stands around awkwardly. BeerHole turns every backyard,
+          tailgate, and pregame into a competition.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>🔥 Viral Energy</h3>
+        <p>
+          The kind of game people post on TikTok, Instagram,
+          and Snapchat all night long.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>🎯 Easy To Learn</h3>
+        <p>
+          Toss. Score. Drink. Repeat.
+          It takes under 60 seconds to start playing.
+        </p>
+      </div>
+
+      <div class="feature-card">
+        <h3>🏆 Be The Trendsetter</h3>
+        <p>
+          Your friends already have pong and cornhole.
+          Be the first crew to own BeerHole.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="party-section">
+
+    <h2>THE NEXT BIG PARTY GAME</h2>
+
+    <p>
+      Every college campus has that one game everyone talks about.
+      This year, it's BeerHole. Bring it to the party once and watch
+      everybody line up to play. Competitive, chaotic, hilarious,
+      and built for unforgettable nights.
+    </p>
+
+  </section>
+
+  <section class="social-proof">
+
+    <div class="section-title">
+      <h2>COLLEGE KIDS LOVE IT</h2>
+    </div>
+
+    <div class="quotes">
+
+      <div class="quote">
+        <p>
+          “We brought BeerHole to one tailgate and suddenly
+          everyone wanted to play.”
+        </p>
+        <span>— Jake, University Student</span>
+      </div>
+
+      <div class="quote">
+        <p>
+          “Way more fun than beer pong.
+          Every party needs this.”
+        </p>
+        <span>— Mia, Sorority Member</span>
+      </div>
+
+      <div class="quote">
+        <p>
+          “This is definitely going viral at our school.”
+        </p>
+        <span>— Ryan, Fraternity President</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="cta">
+
+    <h2>DON'T BE THE LAST TO GET IT</h2>
+
+    <p>
+      BeerHole is brand new and blowing up fast.
+      Get yours now before every backyard party already has one.
+    </p>
+
+    <button class="btn btn-secondary">
+      Claim Your Set
+    </button>
+
+  </section>
+
+  <footer>
+    © 2026 BeerHole — Built For Backyard Legends 🍻
+  </footer>
+
+</body>
+</html>

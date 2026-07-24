@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipping — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Montserrat',sans-serif;
+      background:#0a0a0a;
+      color:white;
+    }
+
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(245,240,230,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .wrap{
+      max-width:520px;
+      margin:0 auto;
+      padding:150px 6% 100px;
+    }
+
+    h1{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:3rem;
+      color:#fe6901;
+      letter-spacing:2px;
+      margin-bottom:8px;
+    }
+
+    .product-line{
+      color:#aaa;
+      font-size:1rem;
+      margin-bottom:36px;
+    }
+
+    .product-line strong{ color:#fff; }
+
+    .card{
+      background:#161616;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:26px 24px;
+      margin-bottom:20px;
+    }
+
+    .card h2{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.3rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      margin-bottom:16px;
+      color:#fff;
+    }
+
+    .zip-row{
+      display:flex;
+      gap:10px;
+    }
+
+    input[type="text"]{
+      flex:1;
+      padding:14px 16px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,.15);
+      background:#0a0a0a;
+      color:#fff;
+      font-size:1rem;
+      font-family:'Montserrat',sans-serif;
+    }
+
+    input[type="text"]:focus{ outline:none; border-color:#fe6901; }
+
+    button{
+      font-family:'Barlow Condensed',sans-serif;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      cursor:pointer;
+      border:none;
+      transition:.2s;
+    }
+
+    .btn-quote{
+      padding:14px 22px;
+      background:#fe6901;
+      color:#fff;
+      border-radius:8px;
+      font-size:.95rem;
+      white-space:nowrap;
+    }
+
+    .btn-quote:hover{ background:#ff7d1f; }
+    .btn-quote:disabled{ opacity:.5; cursor:not-allowed; }
+
+    .error-msg{
+      color:#ff6b6b;
+      font-size:.85rem;
+      margin-top:10px;
+      display:none;
+    }
+
+    .quote-result{
+      display:none;
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .quote-amount{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2.2rem;
+      color:#fe6901;
+      letter-spacing:1px;
+    }
+
+    .quote-detail{
+      color:#999;
+      font-size:.85rem;
+      margin-top:4px;
+    }
+
+    .local-option label{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color:#ddd;
+      font-size:.95rem;
+      cursor:pointer;
+    }
+
+    .local-option p{
+      color:#888;
+      font-size:.82rem;
+      margin-top:8px;
+      padding-left:26px;
+    }
+
+    .continue-btn{
+      display:block;
+      width:100%;
+      padding:16px;
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      color:#fff;
+      font-size:1.1rem;
+      border-radius:10px;
+      margin-top:6px;
+      opacity:.4;
+      pointer-events:none;
+    }
+
+    .continue-btn.active{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .skip-link{
+      display:block;
+      text-align:center;
+      margin-top:16px;
+      color:#777;
+      font-size:.82rem;
+      text-decoration:underline;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+  </nav>
+
+  <div class="wrap">
+    <h1>Shipping</h1>
+    <p class="product-line">Getting a rate for: <strong id="product-name">—</strong></p>
+
+    <div class="card local-option">
+      <h2>Local Delivery</h2>
+      <label>
+        <input type="radio" name="delivery-method" id="local-radio" value="local">
+        Free hand delivery — Spokane / Spokane Valley, WA area
+      </label>
+      <p>Select this and skip straight to checkout — no shipping charge.</p>
+    </div>
+
+    <div class="card">
+      <h2>Ship It To Me</h2>
+      <div class="zip-row">
+        <input type="text" id="zip-input" placeholder="Enter ZIP code" inputmode="numeric" maxlength="10">
+        <button type="button" class="btn-quote" id="quote-btn" onclick="getQuote()">Get Quote</button>
+      </div>
+      <p class="error-msg" id="error-msg"></p>
+      <div class="quote-result" id="quote-result">
+        <div class="quote-amount" id="quote-amount"></div>
+        <div class="quote-detail" id="quote-detail"></div>
+      </div>
+    </div>
+
+    <button type="button" class="continue-btn" id="continue-btn" onclick="goToCheckout()">Continue to Checkout</button>
+    <span class="skip-link" onclick="skipToCheckout()">Skip — use standard estimated shipping instead</span>
+  </div>
+
+  <script>
+    const PRODUCTS = {
+      'complete-set': { name: 'Complete Set' },
+      'extra-bags': { name: 'Extra Bags' },
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('product');
+    let currentQuoteId = null;
+    let deliveryMethod = null;
+
+    if (PRODUCTS[productId]) {
+      document.getElementById('product-name').textContent = PRODUCTS[productId].name;
+    } else {
+      document.getElementById('product-name').textContent = 'Unknown product';
+      document.getElementById('quote-btn').disabled = true;
+    }
+
+    document.getElementById('local-radio').addEventListener('change', () => {
+      deliveryMethod = 'local';
+      currentQuoteId = null;
+      document.getElementById('continue-btn').classList.add('active');
+      document.getElementById('continue-btn').textContent = 'Continue to Checkout — Free Local Delivery';
+    });
+
+    async function getQuote(){
+      const zip = document.getElementById('zip-input').value.trim();
+      const errorEl = document.getElementById('error-msg');
+      const btn = document.getElementById('quote-btn');
+      errorEl.style.display = 'none';
+
+      if (!/^\d{5}(-\d{4})?$/.test(zip)) {
+        errorEl.textContent = 'Please enter a valid 5-digit ZIP code.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Getting Rate…';
+
+      try {
+        const resp = await fetch('/shipping-rate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product: productId, zip }),
+        });
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          throw new Error(data.error || 'Could not get a shipping rate.');
+        }
+
+        currentQuoteId = data.quoteId;
+        deliveryMethod = 'standard';
+        document.getElementById('local-radio').checked = false;
+
+        const dollars = (data.amount / 100).toFixed(2);
+        document.getElementById('quote-amount').textContent = `$${dollars}`;
+        document.getElementById('quote-detail').textContent = data.live
+          ? `${data.carrier || ''} ${data.service || ''}`.trim() + (data.estimatedDays ? ` — est. ${data.estimatedDays} business days` : '')
+          : 'Estimated rate — live rates coming soon';
+        document.getElementById('quote-result').style.display = 'block';
+
+        const continueBtn = document.getElementById('continue-btn');
+        continueBtn.classList.add('active');
+        continueBtn.textContent = 'Continue to Checkout';
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Get Quote';
+      }
+    }
+
+    function submitCheckout(quoteId){
+      const f = document.createElement('form');
+      f.method = 'POST';
+      f.action = '/create-checkout-session';
+
+      const productInput = document.createElement('input');
+      productInput.type = 'hidden';
+      productInput.name = 'product';
+      productInput.value = productId;
+      f.appendChild(productInput);
+
+      if (quoteId) {
+        const quoteInput = document.createElement('input');
+        quoteInput.type = 'hidden';
+        quoteInput.name = 'quoteId';
+        quoteInput.value = quoteId;
+        f.appendChild(quoteInput);
+      }
+
+      document.body.appendChild(f);
+      f.submit();
+    }
+
+    function goToCheckout(){
+      if (deliveryMethod === 'local') {
+        submitCheckout(null);
+      } else if (currentQuoteId) {
+        submitCheckout(currentQuoteId);
+      }
+    }
+
+    function skipToCheckout(){
+      submitCheckout(null);
+    }
+  </script>
+
+</body>
+</html>

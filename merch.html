@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Merch — Coming Soon | BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#ffffff;
+      color:#1a1a1a;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(255,255,255,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover{ border-bottom-color:#fe6901; }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Coming Soon ── */
+    .coming-soon{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:160px 8% 100px;
+      background:
+        linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.65)),
+        url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+    }
+
+    .coming-soon-inner{
+      max-width:600px;
+    }
+
+    .badge{
+      display:inline-block;
+      background:#fe6901;
+      color:#000;
+      padding:10px 22px;
+      font-weight:800;
+      font-size:.85rem;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      margin-bottom:24px;
+    }
+
+    .coming-soon h1{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:4.5rem;
+      color:#fff;
+      letter-spacing:2px;
+      line-height:1;
+      margin-bottom:20px;
+    }
+
+    .coming-soon p{
+      font-size:1.15rem;
+      color:#eee;
+      line-height:1.8;
+      margin-bottom:36px;
+    }
+
+    .back-link{
+      display:inline-block;
+      padding:16px 34px;
+      background:#fff;
+      color:#1a1a1a;
+      font-weight:800;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+      text-decoration:none;
+      transition:.2s;
+    }
+
+    .back-link:hover{
+      background:#fe6901;
+      color:#fff;
+      transform:translateY(-2px);
+    }
+
+    @media(max-width:700px){
+      .coming-soon h1{ font-size:2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="coming-soon">
+    <div class="coming-soon-inner">
+      <span class="badge">Coming Soon</span>
+      <h1>MERCH IS ON THE WAY</h1>
+      <p>
+        We're putting the finishing touches on BeerHole apparel.
+        Check back soon — or grab a set in the meantime.
+      </p>
+      <a href="shop.html" class="back-link">← Back to Shop</a>
+    </div>
+  </div>
+
+</body>
+</html>

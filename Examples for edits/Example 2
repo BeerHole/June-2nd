@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Permanent+Marker&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --yellow:#FFE600;
+  --orange:#FF5C00;
+  --red:#E8001D;
+  --black:#0A0A0A;
+  --white:#FAFAF5;
+  --pink:#FF2D78;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0.9rem 2rem;background:var(--black);border-bottom:3px solid var(--yellow);}
+.logo{font-family:'Anton',sans-serif;font-size:1.8rem;letter-spacing:0.06em;color:var(--yellow);text-transform:uppercase;}
+.logo span{color:var(--orange);}
+.nav-btn{background:var(--yellow);color:var(--black);font-weight:700;font-size:0.85rem;padding:0.5rem 1.3rem;border-radius:6px;border:none;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:transform 0.15s,background 0.15s;}
+.nav-btn:hover{background:var(--orange);color:var(--white);transform:scale(1.05);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:7rem 1.5rem 4rem;position:relative;overflow:hidden;}
+
+/* animated stripe bg */
+.hero-stripes{position:absolute;inset:0;z-index:0;
+  background:repeating-linear-gradient(
+    -55deg,
+    transparent,transparent 40px,
+    rgba(255,230,0,0.04) 40px,rgba(255,230,0,0.04) 80px
+  );
+}
+.confetti-dot{position:absolute;border-radius:50%;animation:drift linear infinite;}
+@keyframes drift{0%{transform:translateY(-40px) rotate(0deg);opacity:1;}100%{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+
+.hero-eyebrow{font-family:'Permanent Marker',cursive;font-size:1.1rem;color:var(--orange);margin-bottom:0.75rem;position:relative;z-index:1;transform:rotate(-2deg);display:inline-block;}
+.hero-title{font-family:'Anton',sans-serif;font-size:clamp(5.5rem,18vw,13rem);line-height:0.88;letter-spacing:0.01em;text-transform:uppercase;position:relative;z-index:1;}
+.hero-title .t1{color:var(--white);}
+.hero-title .t2{color:var(--yellow);-webkit-text-stroke:3px var(--yellow);display:block;}
+.hero-sub{font-size:clamp(1rem,2.2vw,1.25rem);color:rgba(250,250,245,0.65);max-width:480px;margin:1.4rem auto 0;line-height:1.55;position:relative;z-index:1;}
+.hero-sub strong{color:var(--yellow);}
+
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:2.2rem;position:relative;z-index:1;}
+.btn-primary{background:var(--yellow);color:var(--black);font-weight:700;font-size:1rem;padding:0.9rem 2.4rem;border-radius:8px;border:none;cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:transform 0.15s,background 0.15s;}
+.btn-primary:hover{background:var(--orange);color:var(--white);transform:translateY(-3px);}
+.btn-ghost{background:transparent;color:var(--white);font-weight:700;font-size:1rem;padding:0.9rem 2.4rem;border-radius:8px;border:2px solid rgba(255,255,255,0.25);cursor:pointer;letter-spacing:0.06em;text-transform:uppercase;transition:transform 0.15s,border-color 0.15s;}
+.btn-ghost:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-3px);}
+
+/* SCROLL TICKER */
+.ticker{background:var(--yellow);padding:0.65rem 0;overflow:hidden;white-space:nowrap;}
+.ticker-inner{display:inline-flex;animation:tick 18s linear infinite;}
+.ticker-item{font-family:'Anton',sans-serif;font-size:1rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--black);padding:0 2rem;}
+.ticker-item span{color:var(--orange);margin-right:2rem;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* SOCIAL PROOF */
+.proof{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap;padding:3.5rem 2rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+.proof-stat{text-align:center;}
+.proof-num{font-family:'Anton',sans-serif;font-size:3rem;color:var(--yellow);line-height:1;}
+.proof-label{font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:0.25rem;}
+
+/* HOW TO PLAY */
+.section{padding:5rem 2rem;max-width:1080px;margin:0 auto;}
+.tag{display:inline-block;font-family:'Permanent Marker',cursive;font-size:0.95rem;color:var(--orange);margin-bottom:0.5rem;transform:rotate(-1.5deg);}
+.section-title{font-family:'Anton',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);text-transform:uppercase;color:var(--white);line-height:1;margin-bottom:2.5rem;}
+.section-title span{color:var(--yellow);}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.5rem;}
+.step{background:#141414;border-radius:12px;padding:1.75rem 1.5rem;border:1px solid rgba(255,255,255,0.07);position:relative;overflow:hidden;transition:transform 0.2s,border-color 0.2s;}
+.step::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--yellow);}
+.step:hover{transform:translateY(-5px);border-color:rgba(255,230,0,0.3);}
+.step-num{font-family:'Anton',sans-serif;font-size:3.5rem;color:rgba(255,230,0,0.12);line-height:1;position:absolute;top:1rem;right:1rem;}
+.step h3{font-weight:700;font-size:1rem;margin-bottom:0.5rem;color:var(--white);text-transform:uppercase;letter-spacing:0.05em;}
+.step p{font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.6;}
+
+/* SCORING */
+.scoring{background:#111;border-top:1px solid rgba(255,255,255,0.07);border-bottom:1px solid rgba(255,255,255,0.07);padding:5rem 2rem;}
+.scoring-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+@media(max-width:680px){.scoring-inner{grid-template-columns:1fr;}}
+
+.score-list{list-style:none;display:flex;flex-direction:column;gap:0.85rem;margin-top:2rem;}
+.score-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:#1a1a1a;border-radius:10px;border-left:4px solid var(--yellow);transition:background 0.2s;}
+.score-item:hover{background:#222;}
+.score-pts{font-family:'Anton',sans-serif;font-size:2.2rem;color:var(--yellow);min-width:52px;line-height:1;}
+.score-desc strong{display:block;font-weight:700;font-size:0.92rem;color:var(--white);}
+.score-desc span{font-size:0.8rem;color:rgba(255,255,255,0.4);}
+
+/* HOLE GRID */
+.grid-wrap{display:flex;justify-content:center;}
+
+/* CTA */
+.cta-block{background:var(--yellow);padding:6rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.cta-block::before{content:'BEERHOLE';position:absolute;font-family:'Anton',sans-serif;font-size:20vw;color:rgba(0,0,0,0.07);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;pointer-events:none;letter-spacing:0.04em;}
+.cta-block h2{font-family:'Anton',sans-serif;font-size:clamp(3rem,8vw,6rem);text-transform:uppercase;color:var(--black);line-height:1;position:relative;z-index:1;margin-bottom:0.75rem;}
+.cta-block p{font-size:1.1rem;color:rgba(0,0,0,0.6);max-width:440px;margin:0 auto 2rem;position:relative;z-index:1;}
+.btn-dark{background:var(--black);color:var(--yellow);font-weight:700;font-size:1.1rem;padding:1rem 3rem;border-radius:8px;border:none;cursor:pointer;letter-spacing:0.08em;text-transform:uppercase;position:relative;z-index:1;transition:transform 0.15s,background 0.15s;}
+.btn-dark:hover{background:#1a1a1a;transform:translateY(-3px);}
+.price-tag{font-family:'Anton',sans-serif;font-size:1.2rem;color:rgba(0,0,0,0.4);position:relative;z-index:1;margin-top:1rem;letter-spacing:0.05em;}
+
+/* FOOTER */
+footer{background:#050505;text-align:center;padding:2rem;font-size:0.8rem;color:rgba(255,255,255,0.2);border-top:1px solid rgba(255,255,255,0.06);}
+footer strong{font-family:'Anton',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--yellow);}
+
+/* ANIMATIONS */
+@keyframes popIn{from{opacity:0;transform:scale(0.88) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.hero>*{animation:popIn 0.55s ease both;}
+.hero-eyebrow{animation-delay:0.05s;}
+.hero-title{animation-delay:0.15s;}
+.hero-sub{animation-delay:0.28s;}
+.hero-ctas{animation-delay:0.4s;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Beer<span>Hole</span></div>
+  <button class="nav-btn" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Buy Now $79</button>
+</nav>
+
+<!-- confetti dots -->
+<div class="hero" id="top">
+  <div class="hero-stripes"></div>
+
+  <p class="hero-eyebrow">🏆 &nbsp; The game your tailgate is missing</p>
+  <h1 class="hero-title">
+    <span class="t1">Beer</span>
+    <span class="t2">Hole.</span>
+  </h1>
+  <p class="hero-sub">Cornhole met beer pong and had a <strong>legendary</strong> baby. 9 holes. Two teams. Non-stop drinks. First to 21 wins — losers finish their cup.</p>
+  <div class="hero-ctas">
+    <button class="btn-primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">🛒 Shop Now — $79</button>
+    <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How to Play</button>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker">
+    <span class="ticker-item">Cornhole 🤝 Beer Pong <span>•</span></span>
+    <span class="ticker-item">9 Holes <span>•</span></span>
+    <span class="ticker-item">Infinite Vibes <span>•</span></span>
+    <span class="ticker-item">Ships in 3 Days <span>•</span></span>
+    <span class="ticker-item">Tailgate Approved <span>•</span></span>
+    <span class="ticker-item">Play Anywhere <span>•</span></span>
+    <span class="ticker-item">Cornhole 🤝 Beer Pong <span>•</span></span>
+    <span class="ticker-item">9 Holes <span>•</span></span>
+    <span class="ticker-item">Infinite Vibes <span>•</span></span>
+    <span class="ticker-item">Ships in 3 Days <span>•</span></span>
+    <span class="ticker-item">Tailgate Approved <span>•</span></span>
+    <span class="ticker-item">Play Anywhere <span>•</span></span>
+  </div>
+</div>
+
+<!-- SOCIAL PROOF -->
+<div class="proof">
+  <div class="proof-stat"><div class="proof-num">9</div><div class="proof-label">Holes of Chaos</div></div>
+  <div class="proof-stat"><div class="proof-num">2</div><div class="proof-label">Teams. 1 Winner.</div></div>
+  <div class="proof-stat"><div class="proof-num">21</div><div class="proof-label">Points to Glory</div></div>
+  <div class="proof-stat"><div class="proof-num">∞</div><div class="proof-label">Good Times</div></div>
+</div>
+
+<!-- HOW TO PLAY -->
+<div class="section" id="how">
+  <p class="tag">🎯 How it works</p>
+  <h2 class="section-title">Rules are <span>Simple.</span><br>Losses are Painful.</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h3>Set Up</h3>
+      <p>27 feet apart (or closer — we don't judge). Each of the 9 holes means someone's drinking.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h3>Fill Up</h3>
+      <p>Every hole = a drink for your opponent. The center BeerHole? That's a full cup. No mercy.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h3>Toss & Score</h3>
+      <p>Different holes = different points. Hit the board, score 1. Sink a hole, score big and watch them drink.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h3>Redemption</h3>
+      <p>Losing team gets one shot at redemption — just like beer pong. It ain't over till it's over.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SCORING -->
+<div class="scoring">
+  <div class="scoring-inner">
+    <div>
+      <p class="tag">💀 Point System</p>
+      <h2 class="section-title">Every <span>Hole</span><br>Has a Price.</h2>
+      <ul class="score-list">
+        <li class="score-item">
+          <div class="score-pts">3</div>
+          <div class="score-desc"><strong>Center — The BeerHole</strong><span>3 pts + full cup. Prepare for silence.</span></div>
+        </li>
+        <li class="score-item">
+          <div class="score-pts">2</div>
+          <div class="score-desc"><strong>Corner Holes</strong><span>2 pts + 2 big sips. Ouch.</span></div>
+        </li>
+        <li class="score-item">
+          <div class="score-pts">1</div>
+          <div class="score-desc"><strong>Edge Holes</strong><span>1 pt + 1 sip. Still hurts.</span></div>
+        </li>
+        <li class="score-item">
+          <div class="score-pts" style="font-size:1.5rem;">🎯</div>
+          <div class="score-desc"><strong>Board (no hole)</strong><span>1 pt, no drink. Lucky.</span></div>
+        </li>
+      </ul>
+    </div>
+    <div class="grid-wrap">
+      <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="232" height="232" rx="16" fill="#1a1a1a" stroke="#FFE600" stroke-width="2.5"/>
+        <!-- corner holes -->
+        <circle cx="55" cy="55" r="28" fill="#0A0A0A" stroke="#FFE600" stroke-width="2.5"/>
+        <text x="55" y="60" text-anchor="middle" font-family="Anton,sans-serif" font-size="15" fill="#FFE600">2PT</text>
+        <circle cx="185" cy="55" r="28" fill="#0A0A0A" stroke="#FFE600" stroke-width="2.5"/>
+        <text x="185" y="60" text-anchor="middle" font-family="Anton,sans-serif" font-size="15" fill="#FFE600">2PT</text>
+        <circle cx="55" cy="185" r="28" fill="#0A0A0A" stroke="#FFE600" stroke-width="2.5"/>
+        <text x="55" y="190" text-anchor="middle" font-family="Anton,sans-serif" font-size="15" fill="#FFE600">2PT</text>
+        <circle cx="185" cy="185" r="28" fill="#0A0A0A" stroke="#FFE600" stroke-width="2.5"/>
+        <text x="185" y="190" text-anchor="middle" font-family="Anton,sans-serif" font-size="15" fill="#FFE600">2PT</text>
+        <!-- edge holes -->
+        <circle cx="120" cy="55" r="20" fill="#0A0A0A" stroke="rgba(255,230,0,0.4)" stroke-width="1.5"/>
+        <text x="120" y="60" text-anchor="middle" font-family="Anton,sans-serif" font-size="13" fill="rgba(255,230,0,0.5)">1PT</text>
+        <circle cx="120" cy="185" r="20" fill="#0A0A0A" stroke="rgba(255,230,0,0.4)" stroke-width="1.5"/>
+        <text x="120" y="190" text-anchor="middle" font-family="Anton,sans-serif" font-size="13" fill="rgba(255,230,0,0.5)">1PT</text>
+        <circle cx="55" cy="120" r="20" fill="#0A0A0A" stroke="rgba(255,230,0,0.4)" stroke-width="1.5"/>
+        <text x="55" y="125" text-anchor="middle" font-family="Anton,sans-serif" font-size="13" fill="rgba(255,230,0,0.5)">1PT</text>
+        <circle cx="185" cy="120" r="20" fill="#0A0A0A" stroke="rgba(255,230,0,0.4)" stroke-width="1.5"/>
+        <text x="185" y="125" text-anchor="middle" font-family="Anton,sans-serif" font-size="13" fill="rgba(255,230,0,0.5)">1PT</text>
+        <!-- center -->
+        <circle cx="120" cy="120" r="32" fill="#0A0A0A" stroke="#FF5C00" stroke-width="3"/>
+        <text x="120" y="115" text-anchor="middle" font-family="Anton,sans-serif" font-size="16" fill="#FF5C00">3PT</text>
+        <text x="120" y="133" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="rgba(255,92,0,0.7)" font-weight="700" letter-spacing="2">BEERHOLE</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-block" id="cta">
+  <h2>Your Backyard<br>Needs This.</h2>
+  <p>One game. All night. Ships in 3–5 days. Built to survive every tailgate, backyard rager, and beach day you throw at it.</p>
+  <button class="btn-dark">🛒 Order Now — $79</button>
+  <p class="price-tag">Free shipping on orders over $60</p>
+</div>
+
+<footer>
+  <strong>BeerHole</strong><br>
+  <span>Drink responsibly. Play relentlessly. &copy; 2026 BeerHole Co. — Made for good times.</span>
+</footer>
+
+<script>
+const colors=['#FFE600','#FF5C00','#FF2D78','#00E5FF','#ADFF2F'];
+const hero=document.getElementById('top');
+for(let i=0;i<22;i++){
+  const d=document.createElement('div');
+  const size=Math.random()*8+5;
+  d.className='confetti-dot';
+  d.style.cssText=`width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*6+5}s;animation-delay:${Math.random()*4}s;opacity:${Math.random()*0.6+0.2};`;
+  hero.appendChild(d);
+}
+</script>
+</body>
+</html>

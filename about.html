@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#ffffff;
+      color:#1a1a1a;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(255,255,255,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      border-bottom-color:#fe6901;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Hero ── */
+    .about-hero{
+      min-height:55vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:140px 8% 80px;
+      background:
+        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1504884790557-80daa2a69d92?w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+    }
+
+    .about-hero h1{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:6rem;
+      color:#fe6901;
+      letter-spacing:3px;
+      line-height:1;
+      margin-bottom:20px;
+    }
+
+    .about-hero p{
+      font-size:1.2rem;
+      color:#ddd;
+      max-width:600px;
+      margin:0 auto;
+      line-height:1.8;
+    }
+
+    /* ── Story Section ── */
+    .story{
+      padding:90px 8%;
+      max-width:1100px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:60px;
+      flex-wrap:wrap;
+    }
+
+    .story-video{
+      flex:1;
+      min-width:280px;
+    }
+
+    .story-video video{
+      width:100%;
+      aspect-ratio:4/3;
+      object-fit:cover;
+      display:block;
+      border:1px solid rgba(0,0,0,.08);
+    }
+
+    .story-text{
+      flex:1;
+      min-width:280px;
+    }
+
+    .story-label{
+      font-family:'Inter',sans-serif;
+      font-size:1rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:3px;
+      color:#fe6901;
+      margin-bottom:16px;
+    }
+
+    .story h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:4rem;
+      color:#1a1a1a;
+      letter-spacing:2px;
+      margin-bottom:30px;
+      line-height:1;
+    }
+
+    .story p{
+      font-size:1.1rem;
+      color:#444;
+      line-height:1.9;
+      margin-bottom:24px;
+    }
+
+    /* ── Manufacturer Section ── */
+    .manufacturer{
+      background:#ffffff;
+      border-top:1px solid rgba(0,0,0,.08);
+      border-bottom:1px solid rgba(0,0,0,.08);
+      padding:80px 8%;
+      display:flex;
+      align-items:center;
+      gap:60px;
+      flex-wrap:wrap;
+    }
+
+    .manufacturer-text{
+      flex:1;
+      min-width:280px;
+    }
+
+    .manufacturer-text .story-label{
+      margin-bottom:16px;
+    }
+
+    .manufacturer-text h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:3.5rem;
+      color:#1a1a1a;
+      letter-spacing:2px;
+      margin-bottom:20px;
+      line-height:1;
+    }
+
+    .manufacturer-text p{
+      font-size:1.05rem;
+      color:#444;
+      line-height:1.9;
+    }
+
+    .manufacturer-img{
+      flex:1;
+      min-width:280px;
+    }
+
+    .manufacturer-img img,
+    .manufacturer-img video{
+      width:100%;
+      border-radius:0;
+      object-fit:cover;
+      aspect-ratio:4/3;
+      border:1px solid rgba(0,0,0,.08);
+      display:block;
+    }
+
+    /* ── Values ── */
+    .values{
+      padding:90px 8%;
+      text-align:center;
+    }
+
+    .values h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:4rem;
+      color:#fe6901;
+      letter-spacing:2px;
+      margin-bottom:50px;
+    }
+
+    .values-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+      gap:24px;
+      max-width:1000px;
+      margin:0 auto;
+    }
+
+    .value-card{
+      background:#ffffff;
+      border-radius:0;
+      padding:36px 24px;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+      transition:.3s;
+    }
+
+    .value-card:hover{
+      transform:translateY(-8px);
+      border-color:#fe6901;
+      box-shadow:0 14px 30px rgba(254,105,1,.15);
+    }
+
+    .value-icon{
+      font-size:2.5rem;
+      margin-bottom:16px;
+    }
+
+    .value-card h3{
+      font-family:'Inter',sans-serif;
+      font-size:1.4rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:#1a1a1a;
+      margin-bottom:10px;
+    }
+
+    .value-card p{
+      font-size:.95rem;
+      color:#555;
+      line-height:1.7;
+    }
+
+    /* ── CTA ── */
+    .about-cta{
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      text-align:center;
+      padding:80px 8%;
+    }
+
+    .about-cta h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:4rem;
+      color:#fff;
+      letter-spacing:2px;
+      margin-bottom:20px;
+    }
+
+    .about-cta p{
+      font-size:1.1rem;
+      color:rgba(255,255,255,.85);
+      margin-bottom:36px;
+    }
+
+    .about-cta a{
+      display:inline-block;
+      padding:18px 40px;
+      background:#fff;
+      color:#fe6901;
+      font-family:'Inter',sans-serif;
+      font-size:1.2rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      border-radius:12px;
+      text-decoration:none;
+      transition:.2s;
+    }
+
+    .about-cta a:hover{
+      transform:translateY(-3px);
+      box-shadow:0 8px 24px rgba(0,0,0,.2);
+    }
+
+    footer{
+      background:#ffffff;
+      border-top:1px solid rgba(0,0,0,.08);
+      text-align:center;
+      padding:30px;
+      color:#666;
+      font-size:.9rem;
+    }
+
+    @media(max-width:700px){
+      .about-hero h1{ font-size:4rem; }
+      .story h2{ font-size:3rem; }
+      .manufacturer{ flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="about.html" class="active">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="about-hero">
+    <div>
+      <h1>Our Story</h1>
+      <p>BeerHole didn't start in a boardroom. It started in a garage, the same place most great ideas do.</p>
+    </div>
+  </div>
+
+  <div class="story">
+    <div class="story-video">
+      <video src="our-story.mp4" autoplay muted loop playsinline></video>
+    </div>
+    <div class="story-text">
+      <p class="story-label">How It Started</p>
+      <h2>Built From The Ground Up</h2>
+      <p>
+        BeerHole was invented by us — a group of friends who wanted something better to play at backyard hangouts, tailgates, and pregames. We looked around and thought: beer pong is great, cornhole is great, but what if you combined the best parts of both into something totally new?
+      </p>
+      <p>
+        What started as an idea in our garage turned into a game that everyone who played immediately wanted to own. The rules came naturally. The competition was instant. The fun was undeniable. We knew we had something.
+      </p>
+      <p>
+        We built the first sets by hand, tested them with friends, refined the rules, and kept pushing until BeerHole was exactly what we knew it could be — the game that owns every backyard, tailgate, and party it shows up at.
+      </p>
+    </div>
+  </div>
+
+  <div class="manufacturer">
+    <div class="manufacturer-text">
+      <p class="story-label">Who Makes It</p>
+      <h2>Piggy Pit Woodworking</h2>
+      <p>
+        Every BeerHole set is manufactured by Piggy Pit Woodworking — a craftsman operation that shares our commitment to quality. Each board is built to last, built to perform, and built to look great in any setting.
+      </p>
+      <p>
+        When we set out to bring BeerHole to life, we didn't want something mass-produced and forgettable. Partnering with Piggy Pit means every set that leaves the shop is something we're proud to put our name on.
+      </p>
+    </div>
+    <div class="manufacturer-img">
+      <video src="who-makes-it.mp4" autoplay muted loop playsinline></video>
+    </div>
+  </div>
+
+  <div class="values">
+    <h2>What We're About</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🍻</div>
+        <h3>Good Times</h3>
+        <p>We built BeerHole for the moments that turn into stories. Every game should be an experience worth talking about.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🔨</div>
+        <h3>Built to Last</h3>
+        <p>Quality materials, solid construction, and a design that holds up wherever the party takes you.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🏆</div>
+        <h3>Real Competition</h3>
+        <p>BeerHole brings out the competitor in everyone. Skill matters. Strategy matters. Winning feels amazing.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3>Made by Players</h3>
+        <p>We're not a corporation. We're the people who invented this game, play it ourselves, and want you to love it as much as we do.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-cta">
+    <h2>Ready to Play?</h2>
+    <p>Grab your set and bring BeerHole to your next event.</p>
+    <a href="complete-set.html">Shop Now</a>
+  </div>
+
+  <footer>© 2026 BeerHole — Built For Backyard Legends 🍻</footer>
+
+</body>
+</html>

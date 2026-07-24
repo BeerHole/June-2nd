@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>How To Play — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#ffffff;
+      color:#1a1a1a;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(255,255,255,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      border-bottom-color:#fe6901;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Hero ── */
+    .rules-hero{
+      min-height:45vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:140px 8% 60px;
+      background:
+        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+    }
+
+    .rules-hero h1{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:5rem;
+      color:#fe6901;
+      letter-spacing:2px;
+      line-height:1;
+      margin-bottom:20px;
+    }
+
+    .rules-hero p{
+      font-size:1.2rem;
+      color:#ddd;
+      max-width:600px;
+      margin:0 auto;
+      line-height:1.8;
+    }
+
+    /* ── Steps ── */
+    .rules-body{
+      max-width:1000px;
+      margin:0 auto;
+      padding:90px 8%;
+    }
+
+    .rule-step{
+      display:flex;
+      gap:30px;
+      align-items:flex-start;
+      padding:40px 0;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+
+    .rule-step:last-child{
+      border-bottom:none;
+    }
+
+    .step-number{
+      flex-shrink:0;
+      width:60px;
+      height:60px;
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:1.6rem;
+      color:#fff;
+      box-shadow:0 0 20px rgba(255,140,0,.4);
+    }
+
+    .rule-step-content{
+      flex:1;
+    }
+
+    .rule-step h3{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:1.8rem;
+      color:#1a1a1a;
+      margin-bottom:16px;
+    }
+
+    .rule-step ul{
+      list-style:none;
+    }
+
+    .rule-step ul li{
+      color:#444;
+      line-height:1.8;
+      font-size:1rem;
+      padding:8px 0;
+    }
+
+    .rule-step ul li strong{
+      color:#fe6901;
+    }
+
+    .rule-step img{
+      width:100%;
+      max-width:420px;
+      aspect-ratio:16/10;
+      object-fit:cover;
+      border-radius:0;
+      border:1px solid rgba(0,0,0,.08);
+      margin-top:20px;
+    }
+
+    .rerack-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+      gap:24px;
+      margin-top:10px;
+    }
+
+    .rerack-item{
+      text-align:center;
+    }
+
+    .rerack-item img{
+      width:100%;
+      aspect-ratio:2/3;
+      object-fit:cover;
+      border-radius:0;
+      border:1px solid rgba(0,0,0,.08);
+      background:#f7f1e4;
+    }
+
+    .rerack-item span{
+      display:block;
+      margin-top:10px;
+      font-family:'Poppins',sans-serif;
+      font-weight:700;
+      font-size:.9rem;
+      color:#1a1a1a;
+      text-transform:uppercase;
+      letter-spacing:.5px;
+    }
+
+    /* ── CTA ── */
+    .rules-cta{
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      text-align:center;
+      padding:80px 8%;
+    }
+
+    .rules-cta h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:4rem;
+      color:#fff;
+      letter-spacing:2px;
+      margin-bottom:20px;
+    }
+
+    .rules-cta p{
+      font-size:1.1rem;
+      color:rgba(255,255,255,.85);
+      margin-bottom:36px;
+    }
+
+    .rules-cta a{
+      display:inline-block;
+      padding:18px 40px;
+      background:#fff;
+      color:#fe6901;
+      font-family:'Inter',sans-serif;
+      font-size:1.2rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      border-radius:12px;
+      text-decoration:none;
+      transition:.2s;
+    }
+
+    .rules-cta a:hover{
+      transform:translateY(-3px);
+      box-shadow:0 8px 24px rgba(0,0,0,.2);
+    }
+
+    footer{
+      background:#ffffff;
+      border-top:1px solid rgba(0,0,0,.08);
+      text-align:center;
+      padding:30px;
+      color:#666;
+      font-size:.9rem;
+    }
+
+    @media(max-width:700px){
+      .rules-hero h1{ font-size:3rem; }
+      .rule-step{ flex-direction:column; gap:16px; }
+      .rules-cta h2{ font-size:2.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html" class="active">Rules</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="rules-hero">
+    <div>
+      <h1>How To Play</h1>
+      <p>Everything you need to know to run a BeerHole game — from setup to the specialized mechanics that separate the amateurs from the legends.</p>
+    </div>
+  </div>
+
+  <div class="rules-body">
+
+    <div class="rule-step">
+      <div class="step-number">⚠</div>
+      <div class="rule-step-content">
+        <h3>Disclaimer</h3>
+        <ul>
+          <li><strong>House Rules:</strong> Rules may vary depending on who is playing. Generally, the local "house rules" established by the host or venue prior to starting the game are what should be followed.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-step">
+      <div class="step-number">1</div>
+      <div class="rule-step-content">
+        <h3>Equipment & Setup</h3>
+        <ul>
+          <li><strong>Boards:</strong> Place two Beerhole Boards across from one another.</li>
+          <li><strong>Holes:</strong> Utilize the 10 permanent holes built into each board.</li>
+          <li><strong>Bags:</strong> Provide each team with two small bean bags for tossing.</li>
+          <li><strong>Discs:</strong> Keep 10 scoring discs per board nearby to cover the holes.</li>
+          <li><strong>Drinks:</strong> Players keep their own personal beverages on the side.</li>
+          <li><strong>Teams:</strong> Play with two teams, usually two players each.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-step">
+      <div class="step-number">2</div>
+      <div class="rule-step-content">
+        <h3>Gameplay Rules</h3>
+        <ul>
+          <li><strong>First Turn:</strong> Determine who tosses first via Rock-Paper-Scissors or "Eye-to-Eye".</li>
+          <li><strong>Turn Structure:</strong> Each team member tosses one bag per turn — two total tosses per team.</li>
+          <li><strong>Foul Line:</strong> Players must keep feet behind the front edge of their own board when tossing.</li>
+          <li><strong>Covering Holes:</strong> When a bag lands in a hole, the defending team places a disc over it and takes a drink.</li>
+          <li><strong>Bag Returns:</strong> If both players make their tosses in the same turn, they get the bags back and receive two bonus tosses.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-step">
+      <div class="step-number">3</div>
+      <div class="rule-step-content">
+        <h3>Specialized Mechanics</h3>
+        <ul>
+          <li><strong>Re-racking:</strong> Since holes are permanently fixed, teams can strategically call for the opposing team to rearrange the layout of the discs, thus positioning uncovered holes to simulate standard re-rack formations. (Each team is allowed 2 re-racks per game)</li>
+          <li><strong>Teammate Assists:</strong> If a bag sits on the rim of an uncovered hole, the second teammate can knock it in with their own toss.</li>
+          <li><strong>3-Hole Play:</strong> If both teammates hit the same hole, it's worth 3 holes — the hole that was hit must be covered, plus two more holes of the defending team's choice.</li>
+          <li><strong>Redemption:</strong> Once a team covers all 10 holes, the losing team gets one final turn to toss until they miss.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rule-step">
+      <div class="step-number">4</div>
+      <div class="rule-step-content">
+        <h3>Standard Re-Racks</h3>
+        <p style="color:#444; line-height:1.8; margin-bottom:20px;">When a re-rack is called, the defending team rearranges their discs into one of the formations below.</p>
+        <div class="rerack-grid">
+          <div class="rerack-item">
+            <img src="Cornhole.png" alt="Cornhole formation">
+            <span>Cornhole</span>
+          </div>
+          <div class="rerack-item">
+            <img src="Diamond With a Nose.png" alt="Diamond With a Nose formation">
+            <span>Diamond With a Nose</span>
+          </div>
+          <div class="rerack-item">
+            <img src="Diamond.png" alt="Diamond formation">
+            <span>Diamond</span>
+          </div>
+          <div class="rerack-item">
+            <img src="Honey Comb.png" alt="Honey Comb formation">
+            <span>Honey Comb</span>
+          </div>
+          <div class="rerack-item">
+            <img src="Three, Two, One.png" alt="Three, Two, One formation">
+            <span>Three, Two, One</span>
+          </div>
+          <div class="rerack-item">
+            <img src="Triangle.png" alt="Triangle formation">
+            <span>Triangle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="rules-cta">
+    <h2>Ready To Play?</h2>
+    <p>Grab your set and bring BeerHole to your next event.</p>
+    <a href="complete-set.html">Shop Now</a>
+  </div>
+
+  <footer>© 2026 BeerHole — Built For Backyard Legends 🍻</footer>
+
+</body>
+</html>

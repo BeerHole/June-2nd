@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BeerHole | The Ultimate Backyard Party Game</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#ffffff;
+      color:#1a1a1a;
+      overflow-x:hidden;
+    }
+
+    section{
+      padding:80px 8%;
+    }
+
+    .hero{
+      min-height:100vh;
+      padding-top:160px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      text-align:left;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-video-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.7));
+      z-index:1;
+    }
+
+    .hero-video-wrap{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    .hero-video-wrap video{
+      position:absolute;
+      top:50%;
+      left:50%;
+      width:100%;
+      height:100%;
+      min-width:100%;
+      min-height:100%;
+      object-fit:cover;
+      transform:translate(-50%,-50%);
+    }
+
+    .hero-content{
+      width:100%;
+      max-width:1400px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:40px;
+      flex-wrap:wrap;
+      animation:fadeUp 1s ease;
+      position:relative;
+      z-index:2;
+    }
+
+    .hero-left{
+      max-width:640px;
+      text-align:left;
+    }
+
+    .hero-right{
+      max-width:380px;
+      text-align:left;
+      padding-top:12px;
+    }
+
+    .badge{
+      display:inline-block;
+      background:#fe6901;
+      color:black;
+      padding:12px 22px;
+      border-radius:50px;
+      font-weight:800;
+      margin-bottom:25px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      box-shadow:0 0 20px rgba(255,174,0,.5);
+    }
+
+    h1{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:6.65rem;
+      line-height:0.9;
+      letter-spacing:3px;
+      margin-bottom:25px;
+      color:#ffffff;
+      text-shadow:0 0 20px rgba(255,140,0,.5);
+    }
+
+    .hero p{
+      font-size:1.15rem;
+      line-height:1.7;
+      color:#f5f5f5;
+      margin-bottom:30px;
+    }
+
+    .buttons{
+      display:flex;
+      justify-content:flex-start;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      padding:18px 35px;
+      border:none;
+      border-radius:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:.3s;
+      font-size:1rem;
+    }
+
+    .btn-primary{
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      color:white;
+      box-shadow:0 10px 25px rgba(255,140,0,.4);
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-5px) scale(1.03);
+    }
+
+    .btn-secondary{
+      background:transparent;
+      border:2px solid #fff;
+      color:white;
+    }
+
+    .btn-secondary:hover{
+      background:white;
+      color:black;
+    }
+
+    .logo-section{
+      background:#ffffff;
+      text-align:center;
+      padding:60px 8%;
+    }
+
+    .logo-section img{
+      width:420px;
+      max-width:90%;
+      filter:drop-shadow(0 0 40px rgba(255,174,0,.6));
+      animation:fadeUp 1.2s ease;
+    }
+
+    .section-title{
+      text-align:center;
+      margin-bottom:60px;
+    }
+
+    .section-title h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:4rem;
+      color:#fe6901;
+      letter-spacing:2px;
+    }
+
+    .features{
+      background:#ffffff;
+    }
+
+    .swipe-hint{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      margin-top:24px;
+      color:#777;
+      font-size:.85rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:2px;
+    }
+
+    .swipe-arrow{
+      display:flex;
+      gap:2px;
+    }
+
+    .swipe-arrow svg:first-child{
+      opacity:0.4;
+      animation:swipeAnim 1.2s ease-in-out infinite;
+    }
+
+    .swipe-arrow svg:last-child{
+      opacity:0.8;
+      animation:swipeAnim 1.2s ease-in-out infinite 0.2s;
+    }
+
+    @keyframes swipeAnim{
+      0%, 100%{ transform:translateX(0); opacity:0.3; }
+      50%{ transform:translateX(6px); opacity:1; }
+    }
+
+    .feature-grid-wrap{
+      overflow-x: scroll;
+      overflow-y: hidden;
+      cursor: grab;
+      padding-bottom: 10px;
+      scrollbar-width: none;
+    }
+
+    .feature-grid-wrap::-webkit-scrollbar{
+      display: none;
+    }
+
+    #rules-wrap{
+      overflow-x: scroll;
+      overflow-y: hidden;
+      scrollbar-width: none;
+      overscroll-behavior-x: none;
+    }
+    #rules-wrap::-webkit-scrollbar{ display: none; }
+    #rules-grid .feature-card:last-child{ margin-right: 0; }
+
+    .feature-grid-wrap:active{
+      cursor: grabbing;
+    }
+
+    .feature-grid{
+      display: flex;
+      flex-direction: row;
+      width: max-content;
+    }
+
+    .feature-grid .feature-card{
+      flex: 0 0 500px;
+      margin-right: 20px;
+    }
+
+    .feature-card{
+      background:#ffffff;
+      padding:160px 30px;
+      border-radius:0;
+      transition:.3s;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+    }
+
+    .feature-card:hover{
+      transform:translateY(-10px);
+      background:#fff8ef;
+      border-color:#fe6901;
+      box-shadow:0 14px 30px rgba(254,105,1,.15);
+    }
+
+    .feature-card h3{
+      color:#fe6901;
+      margin-bottom:15px;
+      font-family:'Inter',sans-serif;
+      font-size:2rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      text-align:center;
+      transition:color .3s, letter-spacing .3s;
+    }
+
+    .feature-card:hover h3{
+      color:#e35800;
+      letter-spacing:4px;
+    }
+
+    .feature-card p{
+      color:#444;
+      line-height:1.7;
+      font-family:'Inter',sans-serif;
+      font-size:1.2rem;
+      font-weight:600;
+      text-align:center;
+    }
+
+    .party-section{
+      background:
+        linear-gradient(rgba(0,0,0,.75),rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+      text-align:center;
+    }
+
+    .party-section h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:5rem;
+      margin-bottom:20px;
+      color:#fff;
+    }
+
+    .party-section p{
+      max-width:800px;
+      margin:auto;
+      line-height:1.8;
+      font-size:1.2rem;
+      color:#f0f0f0;
+    }
+
+    .social-links{
+      display:flex;
+      justify-content:center;
+      gap:24px;
+      margin-top:34px;
+    }
+
+    .social-links a{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:10px;
+      color:#fff;
+      text-decoration:none;
+      transition:.25s;
+    }
+
+    .social-icon-circle{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.4);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:.25s;
+    }
+
+    .social-icon-label{
+      font-size:.75rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+      color:#ddd;
+      transition:color .25s;
+    }
+
+    .social-links a:hover .social-icon-circle{
+      transform:translateY(-4px);
+    }
+
+    /* Instagram brand gradient */
+    .social-instagram:hover .social-icon-circle{
+      background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
+      border-color:transparent;
+    }
+
+    .social-instagram:hover .social-icon-label{
+      color:#dc2743;
+    }
+
+    /* TikTok neon duotone glow */
+    .social-tiktok:hover .social-icon-circle{
+      background:#000000;
+      border-color:#000000;
+      box-shadow:-4px 0 0 0 #25F4EE, 4px 0 0 0 #FE2C55;
+    }
+
+    .social-tiktok:hover .social-icon-label{
+      color:#FE2C55;
+    }
+
+    /* Facebook blue */
+    .social-facebook:hover .social-icon-circle{
+      background:#1877F2;
+      border-color:#1877F2;
+    }
+
+    .social-facebook:hover .social-icon-label{
+      color:#1877F2;
+    }
+
+    .traits{
+      background:#ffffff;
+    }
+
+    .traits-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:40px;
+      max-width:1200px;
+      margin:0 auto;
+    }
+
+    .trait-item img{
+      width:100%;
+      aspect-ratio:4/3;
+      object-fit:cover;
+      border-radius:0;
+      border:1px solid rgba(0,0,0,.08);
+      margin-bottom:22px;
+    }
+
+    .trait-item h3{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:1.6rem;
+      color:#1a1a1a;
+      margin-bottom:10px;
+    }
+
+    .trait-item p{
+      font-size:1rem;
+      color:#555;
+      line-height:1.7;
+    }
+
+    .social-proof{
+      background:#ffffff;
+    }
+
+    .social-proof .section-title h2{
+      text-align:left;
+    }
+
+    .product-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:20px;
+    }
+
+    .product-card{
+      background:#ffffff;
+      border-radius:0;
+      overflow:hidden;
+      cursor:pointer;
+      transition:transform .25s ease, box-shadow .25s ease;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+    }
+
+    .product-card:hover{
+      transform:translateY(-6px);
+      box-shadow:0 14px 30px rgba(0,0,0,.1);
+    }
+
+    .product-card-img{
+      width:100%;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      display:block;
+      background:#f0e9db;
+    }
+
+    .product-card-body{
+      padding:18px 20px 22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .product-card-name{
+      font-family:'Inter',sans-serif;
+      font-size:1.3rem;
+      font-weight:700;
+      color:#1a1a1a;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .product-card-price{
+      font-family:'Inter',sans-serif;
+      font-size:1.2rem;
+      font-weight:700;
+      color:#fe6901;
+    }
+
+    .product-card-btn{
+      display:block;
+      width:calc(100% - 40px);
+      margin:0 20px 20px;
+      padding:14px;
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      color:#fff;
+      font-family:'Inter',sans-serif;
+      font-size:1.1rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      transition:opacity .2s;
+    }
+
+    .product-card-btn:hover{
+      opacity:.85;
+    }
+
+    .cta{
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      text-align:center;
+      color:white;
+    }
+
+    .cta h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:5rem;
+      margin-bottom:20px;
+    }
+
+    .cta p{
+      font-size:1.3rem;
+      max-width:700px;
+      margin:0 auto 35px;
+      line-height:1.7;
+    }
+
+    footer{
+      background:#ffffff;
+      border-top:1px solid rgba(0,0,0,.08);
+      text-align:center;
+      padding:30px;
+      color:#666;
+    }
+
+    nav{
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:1000;
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      gap:30px;
+      padding:18px 8%;
+      background:rgba(255,255,255,0.97);
+      box-shadow:0 2px 20px rgba(0,0,0,.15);
+      transition:padding .4s;
+    }
+
+    nav.scrolled{
+      padding:12px 8%;
+    }
+
+    .nav-actions{
+      display:flex;
+      align-items:center;
+      gap:20px;
+      list-style:none;
+      margin-left:auto;
+    }
+
+    .nav-account, .nav-cart{
+      text-decoration:none;
+      color:#1a1a1a;
+      display:inline-flex;
+      align-items:center;
+      position:relative;
+      transition:color .3s;
+    }
+
+    .nav-account:hover, .nav-cart:hover{
+      color:#fe6901;
+    }
+
+    nav.scrolled .nav-account svg, nav.scrolled .nav-cart svg{
+      stroke:#1a1a1a;
+    }
+
+    nav.scrolled .nav-account:hover svg, nav.scrolled .nav-cart:hover svg{
+      stroke:#fe6901;
+    }
+
+    .nav-account::after, .nav-cart::after{
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:-4px;
+      width:0;
+      height:2px;
+      background:#fe6901;
+      transition:width .3s;
+    }
+
+    .nav-account:hover::after, .nav-cart:hover::after{
+      width:100%;
+    }
+
+    nav.scrolled .nav-account{
+      color:#1a1a1a;
+    }
+
+    nav.scrolled .nav-links a{
+      color:#1a1a1a;
+    }
+
+    nav.scrolled .nav-links a:hover{
+      color:#fe6901;
+    }
+
+
+    .nav-logo img{
+      height:55px;
+      width:auto;
+      filter:drop-shadow(0 0 8px rgba(255,174,0,.5));
+      transition:filter .3s;
+    }
+
+    .nav-logo img:hover{
+      filter:drop-shadow(0 0 16px rgba(255,174,0,.9));
+    }
+
+    .nav-links{
+      display:flex;
+      gap:35px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1.4rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      position:relative;
+      transition:color .3s;
+    }
+
+    .nav-links a::after{
+      content:'';
+      position:absolute;
+      left:0;
+      bottom:-4px;
+      width:0;
+      height:2px;
+      background:#fe6901;
+      transition:width .3s;
+    }
+
+    .nav-links a:hover{
+      color:#fe6901;
+    }
+
+    .nav-links a:hover::after{
+      width:100%;
+    }
+
+    .rules{
+      background:#ffffff;
+      scroll-margin-top:80px;
+    }
+
+    .rules-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      gap:30px;
+      max-width:1100px;
+      margin:0 auto;
+    }
+
+    .rule-step{
+      background:#ffffff;
+      padding:40px 30px;
+      border-radius:0;
+      text-align:center;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+      transition:.3s;
+    }
+
+    .rule-step:hover{
+      transform:translateY(-8px);
+      border-color:#fe6901;
+      box-shadow:0 14px 30px rgba(254,105,1,.15);
+    }
+
+    .step-number{
+      width:60px;
+      height:60px;
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:1.8rem;
+      margin:0 auto 20px;
+      box-shadow:0 0 20px rgba(255,140,0,.4);
+    }
+
+    .rule-step h3{
+      color:#fe6901;
+      margin-bottom:12px;
+      font-size:1.3rem;
+    }
+
+    .rule-step p{
+      color:#555;
+      line-height:1.7;
+      font-size:0.95rem;
+    }
+
+    .rule-step ul{
+      list-style:none;
+      padding:0;
+      margin:0;
+      text-align:left;
+    }
+
+    .rule-step ul li{
+      color:#555;
+      line-height:1.7;
+      font-size:0.95rem;
+      padding:6px 0;
+      border-bottom:1px solid rgba(0,0,0,.08);
+    }
+
+    .rule-step ul li:last-child{
+      border-bottom:none;
+    }
+
+    .rule-step ul li strong{
+      color:#fe6901;
+    }
+
+    @keyframes fadeUp{
+      from{
+        opacity:0;
+        transform:translateY(30px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
+    @media(max-width:768px){
+
+      h1{
+        font-size:4.275rem;
+      }
+
+      .hero-content{
+        flex-direction:column;
+      }
+
+      .hero-left,
+      .hero-right{
+        max-width:100%;
+      }
+
+      .hero-right{
+        padding-top:0;
+      }
+
+      .section-title h2,
+      .party-section h2,
+      .cta h2{
+        font-size:3rem;
+      }
+
+      .hero p,
+      .cta p{
+        font-size:1rem;
+      }
+
+      /* ── Mobile Navbar ── */
+      nav{
+        padding:12px 5%;
+        gap:12px;
+        overflow:visible;
+      }
+
+      .nav-links{
+        gap:14px;
+      }
+
+      .nav-links a{
+        font-size:0.85rem;
+      }
+
+      .nav-actions{
+        gap:10px;
+      }
+
+      .nav-actions svg{
+        width:20px;
+        height:20px;
+      }
+
+      .nav-logo img{
+        height:38px;
+        width:auto;
+        max-width:none;
+      }
+
+      /* ── Mobile logo section ── */
+      .logo-section img{
+        width:80%;
+        max-width:320px;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="about.html">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li>
+        <a href="#" class="nav-account">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </a>
+      </li>
+      <li>
+        <a href="#" class="nav-cart">
+          <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <section class="hero" id="hero">
+
+    <div class="hero-video-wrap">
+      <video id="hero-video" autoplay muted playsinline>
+        <source src="beerhole-hero.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="hero-video-overlay"></div>
+
+    <div class="hero-content">
+
+      <div class="hero-left">
+        <h1>BEERPONG<br>MEETS<br>CORNHOLE</h1>
+      </div>
+
+      <div class="hero-right">
+        <p>
+          BeerHole is the insanely fun lawn game built for tailgates,
+          backyard BBQ's, beach days, and weekends.
+          Sink the shot. Hit the holes. Own the party.
+        </p>
+
+        <div class="buttons">
+          <a href="complete-set.html"><button class="btn btn-primary">Order Yours Now</button></a>
+          <button class="btn btn-secondary">Watch Gameplay</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+
+
+  <section class="social-proof">
+
+    <div class="section-title">
+      <h2>AVAILABLE STOCK</h2>
+    </div>
+
+    <div class="product-grid">
+
+      <div class="product-card" onclick="window.location='complete-set.html'" style="cursor:pointer;">
+        <img class="product-card-img" src="https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop" alt="BeerHole Complete Set">
+        <div class="product-card-body">
+          <span class="product-card-name">Complete Set</span>
+          <span class="product-card-price">$399.99</span>
+        </div>
+        <a href="complete-set.html"><button class="product-card-btn">View Product</button></a>
+      </div>
+
+      <div class="product-card" onclick="window.location='extra-bags.html'" style="cursor:pointer;">
+        <img class="product-card-img" src="https://images.unsplash.com/photo-1602632003094-0494b73b7c4a?w=600&auto=format&fit=crop" alt="BeerHole Extra Bags">
+        <div class="product-card-body">
+          <span class="product-card-name">Extra Bags</span>
+          <span class="product-card-price">$19.99</span>
+        </div>
+        <a href="extra-bags.html"><button class="product-card-btn">View Product</button></a>
+      </div>
+
+      <div class="product-card" onclick="window.location='merch.html'" style="cursor:pointer;">
+        <img class="product-card-img" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop" alt="BeerHole Merch">
+        <div class="product-card-body">
+          <span class="product-card-name">Merch</span>
+          <span class="product-card-price">Coming Soon</span>
+        </div>
+        <a href="merch.html"><button class="product-card-btn">Coming Soon</button></a>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="features">
+
+    <div class="feature-grid-wrap" id="feat-wrap">
+      <div class="feature-grid" id="feat-grid">
+
+        <!-- Original cards -->
+        <div class="feature-card"><h3>Instant Function Starter</h3><p>Nobody stands around awkwardly. BeerHole turns every backyard, tailgate, and pregame into a competition.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>Easy To Learn</h3><p>Toss. Score. Drink. Repeat. It takes under 60 seconds to start playing.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>Start The New Trend</h3><p>Your friends already have pong and cornhole. Be the first crew to own BeerHole.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
+        <!-- Duplicate set 2 -->
+        <div class="feature-card"><h3>Instant Function Starter</h3><p>Nobody stands around awkwardly. BeerHole turns every backyard, tailgate, and pregame into a competition.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>Easy To Learn</h3><p>Toss. Score. Drink. Repeat. It takes under 60 seconds to start playing.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>Start The New Trend</h3><p>Your friends already have pong and cornhole. Be the first crew to own BeerHole.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
+        <!-- Duplicate set 3 -->
+        <div class="feature-card"><h3>Instant Function Starter</h3><p>Nobody stands around awkwardly. BeerHole turns every backyard, tailgate, and pregame into a competition.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1565787154274-c8d076ad34e7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>Easy To Learn</h3><p>Toss. Score. Drink. Repeat. It takes under 60 seconds to start playing.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="feature-card"><h3>Start The New Trend</h3><p>Your friends already have pong and cornhole. Be the first crew to own BeerHole.</p></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
+      </div>
+    </div>
+
+    <div class="swipe-hint">
+      <span>Swipe to explore</span>
+      <div class="swipe-arrow">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fe6901" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fe6901" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="rules" id="rules">
+
+    <div class="section-title">
+      <h2>HOW TO PLAY</h2>
+    </div>
+
+    <div class="feature-grid-wrap" id="rules-wrap">
+      <div class="feature-grid" id="rules-grid">
+
+        <div class="rule-step feature-card"><div class="step-number">⚠</div><h3>Disclaimer</h3><ul><li><strong>House Rules:</strong> Rules may vary depending on who is playing. Generally, the local "house rules" established by the host or venue prior to starting the game are what should be followed.</li></ul><img src="https://images.unsplash.com/photo-1610431205421-739e027cc0ce?w=500&auto=format&fit=crop" alt="Warning" style="width:100%; border-radius:0; margin-top:20px; object-fit:cover;"></div>
+        <div class="rule-step feature-card"><div class="step-number">1</div><h3>Equipment & Setup</h3><ul><li><strong>Boards:</strong> Place two Beerhole Boards across from one another.</li><li><strong>Holes:</strong> Utilize the 10 permanent holes built into each board.</li><li><strong>Bags:</strong> Provide each team with two small bean bags for tossing.</li><li><strong>Discs:</strong> Keep 10 scoring discs per board nearby to cover the holes.</li><li><strong>Drinks:</strong> Players keep their own personal beverages on the side.</li><li><strong>Teams:</strong> Play with two teams, usually two players each.</li></ul></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="rule-step feature-card"><div class="step-number">2</div><h3>Gameplay Rules</h3><ul><li><strong>First Turn:</strong> Determine who tosses first via Rock-Paper-Scissors or "Eye-to-Eye".</li><li><strong>Turn Structure:</strong> Each team member tosses one bag per turn — two total tosses per team.</li><li><strong>Foul Line:</strong> Players must keep feet behind the front edge of their own board when tossing.</li><li><strong>Covering Holes:</strong> When a bag lands in a hole, the defending team places a disc over it and takes a drink.</li><li><strong>Bag Returns:</strong> If both players make their tosses in the same turn, they get the bags back and receive two bonus tosses.</li></ul></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://images.unsplash.com/photo-1569937728190-3bc2d87330f5?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+        <div class="rule-step feature-card"><div class="step-number">3</div><h3>Specialized Mechanics</h3><ul><li><strong>Re-racking:</strong> Since holes are permanently fixed, teams can strategically call for the opposing team to rearrange the layout of the discs, thus positioning uncovered holes to simulate standard re-rack formations. (Each team is allowed 2 re-racks per game)</li><li><strong>Teammate Assists:</strong> If a bag sits on the rim of an uncovered hole, the second teammate can knock it in with their own toss.</li><li><strong>3-Hole Play:</strong> If both teammates hit the same hole, it's worth 3 holes — the hole that was hit must be covered, plus two more holes of the defending team's choice.</li><li><strong>Redemption:</strong> Once a team covers all 10 holes, the losing team gets one final turn to toss until they miss.</li></ul></div>
+        <div class="feature-card feature-card--blank" style="background-image:url('https://plus.unsplash.com/premium_photo-1668376544909-860bba2ef93b?w=600&auto=format&fit=crop'); background-size:cover; background-position:center;"></div>
+
+      </div>
+    </div>
+
+    <div class="swipe-hint">
+      <span>Swipe to explore</span>
+      <div class="swipe-arrow">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fe6901" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fe6901" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="party-section" id="about">
+
+    <h2>FOLLOW THE PARTY</h2>
+
+    <p>
+      Gameplay clips, drops, and backyard chaos — follow along online.
+    </p>
+
+    <div class="social-links">
+      <a class="social-instagram" href="https://www.instagram.com/beerholeusa/" target="_blank" rel="noopener" aria-label="Instagram">
+        <span class="social-icon-circle">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </span>
+        <span class="social-icon-label">Instagram</span>
+      </a>
+      <a class="social-tiktok" href="https://www.tiktok.com/@beerholeusa" target="_blank" rel="noopener" aria-label="TikTok">
+        <span class="social-icon-circle">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3v10.5a3.5 3.5 0 1 1-3.5-3.5"></path><path d="M14 3a5 5 0 0 0 5 5"></path></svg>
+        </span>
+        <span class="social-icon-label">TikTok</span>
+      </a>
+      <a class="social-facebook" href="#" aria-label="Facebook">
+        <span class="social-icon-circle">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+        </span>
+        <span class="social-icon-label">Facebook</span>
+      </a>
+    </div>
+
+  </section>
+
+  <section class="traits">
+
+    <div class="traits-grid">
+
+      <div class="trait-item">
+        <img src="https://images.unsplash.com/photo-1539387893102-c0e198446a35?w=700&auto=format&fit=crop" alt="Portable BeerHole set">
+        <h3>Mobile.</h3>
+        <p>BeerHole packs up and travels wherever the party goes.</p>
+      </div>
+
+      <div class="trait-item">
+        <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=700&auto=format&fit=crop" alt="Quick setup">
+        <h3>Handcrafted.</h3>
+        <p>Every board is handmade with expert-level craftsmanship. We cut no corners — only premium materials, built by hand, built to last.</p>
+      </div>
+
+      <div class="trait-item">
+        <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&auto=format&fit=crop" alt="Everyone can play">
+        <h3>All Ages.</h3>
+        <p>Easy enough for beginners, fun enough for everyone — BeerHole brings every generation into the game.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <section class="cta" id="shop">
+
+    <h2>A GAME BUILT TO BUILD MEMORIES</h2>
+
+    <p>
+      Every BeerHole set is built by hand and built to last.
+      We'd love to make you one.
+    </p>
+
+    <a href="shipping-quote.html?product=complete-set" class="btn btn-secondary" style="text-decoration:none;display:inline-block;">
+      Claim Your Set
+    </a>
+
+  </section>
+
+  <section class="logo-section">
+    <img src="beerhole-logo-transparent.png" alt="BeerHole Logo">
+  </section>
+
+  <footer>
+    © 2026 BeerHole — Built For Backyard Legends 🍻
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Seamless card-by-card scroll (3 sets of cards)
+    const featWrap = document.getElementById('feat-wrap');
+    if (featWrap) {
+      const CARD_WIDTH = 520;
+      const NUM_CARDS = 6;
+      const loopWidth = CARD_WIDTH * NUM_CARDS;
+      const SLIDE_DURATION = 900; // ms for slide animation
+      const PAUSE_BETWEEN = 2500; // ms to pause on each card
+
+      let paused = false;
+      let pauseTimer = null;
+      let animating = false;
+
+      // Start at set 2 so user can swipe both directions
+      featWrap.scrollLeft = loopWidth;
+
+      function pauseFor8s() {
+        paused = true;
+        clearTimeout(pauseTimer);
+        pauseTimer = setTimeout(() => { paused = false; }, 8000);
+      }
+
+      // Pause on ANY user interaction with the cards
+      ['mousedown','mousemove','touchstart','touchmove','touchend','wheel'].forEach(evt => {
+        featWrap.addEventListener(evt, pauseFor8s, { passive: true });
+      });
+
+      // Mouse drag
+      let isDown = false, startX, startScroll;
+      featWrap.addEventListener('mousedown', e => {
+        isDown = true;
+        startX = e.pageX - featWrap.offsetLeft;
+        startScroll = featWrap.scrollLeft;
+      });
+      window.addEventListener('mouseup', () => isDown = false);
+      featWrap.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const walked = e.pageX - featWrap.offsetLeft - startX;
+        let next = startScroll - walked;
+        if (next < 0) next += loopWidth;
+        if (next > loopWidth * 2) next -= loopWidth;
+        featWrap.scrollLeft = next;
+      });
+
+      // Smooth slide to next card — seamless loop
+      function slideToNext() {
+        if (paused || animating) return;
+
+        // Silent reposition BEFORE animating — always stay in set 2
+        // so we always have a full set ahead to animate into
+        if (featWrap.scrollLeft >= loopWidth * 1.5) {
+          featWrap.scrollLeft -= loopWidth;
+        }
+
+        animating = true;
+        const start = featWrap.scrollLeft;
+        const target = start + CARD_WIDTH;
+        const startTime = performance.now();
+
+        function animate(now) {
+          if (paused) { animating = false; return; }
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / SLIDE_DURATION, 1);
+          const ease = progress < 0.5
+            ? 2 * progress * progress
+            : -1 + (4 - 2 * progress) * progress;
+
+          featWrap.scrollLeft = start + (target - start) * ease;
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            featWrap.scrollLeft = target;
+            animating = false;
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+
+      setInterval(slideToNext, PAUSE_BETWEEN);
+    }
+
+    // Rules section — simple native scroll + auto-advance
+    (function() {
+      const wrap = document.getElementById('rules-wrap');
+      if (!wrap) return;
+
+      const CARD_WIDTH = 520;
+      const NUM_CARDS = 7;
+      const SLIDE_DURATION = 900;
+      const PAUSE_BETWEEN = 5000;
+
+      let currentIndex = 0;
+      let paused = false;
+      let pauseTimer = null;
+      let animating = false;
+
+      function pause8s() {
+        paused = true;
+        clearTimeout(pauseTimer);
+        pauseTimer = setTimeout(() => { paused = false; }, 8000);
+      }
+
+      // Pause on any user interaction
+      ['mousedown','mousemove','touchstart','touchmove','touchend','wheel'].forEach(evt => {
+        wrap.addEventListener(evt, pause8s, { passive: true });
+      });
+
+      // Mouse drag — clamped so user can't scroll past last card
+      const getMaxScroll = () => (NUM_CARDS * CARD_WIDTH) - wrap.clientWidth;
+
+      let isDown = false, startX, startScroll;
+      wrap.addEventListener('mousedown', e => {
+        isDown = true;
+        startX = e.pageX - wrap.offsetLeft;
+        startScroll = wrap.scrollLeft;
+      });
+      window.addEventListener('mouseup', () => isDown = false);
+      wrap.addEventListener('mousemove', e => {
+        if (!isDown) return;
+        e.preventDefault();
+        const next = startScroll - (e.pageX - wrap.offsetLeft - startX);
+        wrap.scrollLeft = Math.min(Math.max(next, 0), getMaxScroll());
+      });
+
+      // Auto-advance card by card
+      function animateTo(target) {
+        animating = true;
+        const start = wrap.scrollLeft;
+        const t0 = performance.now();
+        function step(now) {
+          if (paused) { animating = false; return; }
+          const p = Math.min((now - t0) / SLIDE_DURATION, 1);
+          const ease = p < 0.5 ? 2*p*p : -1+(4-2*p)*p;
+          wrap.scrollLeft = start + (target - start) * ease;
+          if (p < 1) requestAnimationFrame(step);
+          else { wrap.scrollLeft = target; animating = false; }
+        }
+        requestAnimationFrame(step);
+      }
+
+      function slideNext() {
+        if (paused || animating) return;
+        currentIndex = (currentIndex + 1) % NUM_CARDS;
+        animateTo(currentIndex * CARD_WIDTH);
+      }
+
+      setInterval(slideNext, PAUSE_BETWEEN);
+    })();
+
+    // Cycle through hero videos
+    const videos = [
+      'beerhole-hero.mp4',
+      'mixkit-woman-dancing-at-a-party-in-a-fancy-old-place-46896-hd-ready.mp4',
+      'mixkit-pair-of-female-friends-having-fun-on-a-night-out-42299-hd-ready.mp4'
+    ];
+    let currentVideo = 0;
+    const heroVideo = document.getElementById('hero-video');
+
+    function nextVideo() {
+      currentVideo = (currentVideo + 1) % videos.length;
+      heroVideo.src = videos[currentVideo];
+      heroVideo.play();
+    }
+
+    heroVideo.addEventListener('playing', () => {
+      clearTimeout(heroVideo._timer);
+      heroVideo._timer = setTimeout(nextVideo, 6000);
+    });
+  </script>
+
+</body>
+</html>

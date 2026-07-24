@@ -1,0 +1,11 @@
+# Environment variables — contains real Stripe/Shippo secrets, never commit
+.env
+
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+
+# Editor
+.vscode/

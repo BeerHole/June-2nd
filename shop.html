@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Montserrat',sans-serif;
+      background:#0a0a0a;
+      color:white;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(245,240,230,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      border-bottom-color:#fe6901;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Page Header ── */
+    .shop-header{
+      padding:140px 8% 60px;
+      text-align:center;
+    }
+
+    .shop-header h1{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:5rem;
+      color:#fe6901;
+      letter-spacing:3px;
+      margin-bottom:14px;
+    }
+
+    .shop-header p{
+      color:#aaa;
+      font-size:1.1rem;
+      max-width:500px;
+      margin:0 auto;
+      line-height:1.7;
+    }
+
+    /* ── Product Grid ── */
+    .shop-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:30px;
+      padding:0 8% 100px;
+      max-width:1300px;
+      margin:0 auto;
+    }
+
+    .product-card{
+      background:#1a1a1a;
+      border-radius:20px;
+      overflow:hidden;
+      transition:transform .25s ease;
+      border:1px solid rgba(255,255,255,.06);
+      text-decoration:none;
+      color:inherit;
+      display:block;
+    }
+
+    .product-card:hover{
+      transform:translateY(-8px);
+      border-color:#fe6901;
+    }
+
+    .product-card-media{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .product-card-media img{
+      width:100%;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      display:block;
+      transition:transform .4s ease;
+    }
+
+    .product-card:hover .product-card-media img{
+      transform:scale(1.06);
+    }
+
+    .product-card-overlay{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      padding:18px 16px 16px;
+      background:linear-gradient(to top, rgba(0,0,0,.88) 10%, rgba(0,0,0,0) 100%);
+      opacity:0;
+      transform:translateY(14px);
+      transition:opacity .25s ease, transform .25s ease;
+      pointer-events:none;
+    }
+
+    .product-card:hover .product-card-overlay{
+      opacity:1;
+      transform:translateY(0);
+      pointer-events:auto;
+    }
+
+    .pc-btn{
+      width:100%;
+      padding:11px;
+      border:none;
+      border-radius:8px;
+      font-family:'Barlow Condensed',sans-serif;
+      font-weight:800;
+      font-size:.95rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      cursor:pointer;
+      transition:.2s;
+    }
+
+    .pc-quickadd{
+      background:#fe6901;
+      color:#fff;
+    }
+
+    .pc-quickadd:hover{ background:#ff7d1f; }
+
+    .pc-quickview{
+      background:rgba(255,255,255,.1);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.3);
+      backdrop-filter:blur(4px);
+    }
+
+    .pc-quickview:hover{ background:rgba(255,255,255,.22); }
+
+    .product-card-body{
+      padding:20px 22px 10px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .product-card-name{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.5rem;
+      font-weight:800;
+      color:#fff;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    .product-card-price{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.4rem;
+      font-weight:700;
+      color:#fe6901;
+    }
+
+    .product-card-desc{
+      padding:8px 22px 20px;
+      color:#999;
+      font-size:.9rem;
+      line-height:1.6;
+    }
+
+    .product-card-btn{
+      display:block;
+      margin:0 22px 22px;
+      padding:14px;
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      color:#fff;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.1rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+      transition:opacity .2s;
+      text-align:center;
+    }
+
+    .product-card:hover .product-card-btn{
+      opacity:.88;
+    }
+
+    /* ── Footer ── */
+    footer{
+      background:black;
+      text-align:center;
+      padding:30px;
+      color:#aaa;
+      font-size:.9rem;
+    }
+
+    /* ── Quick View Modal ── */
+    .qv-modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.75);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:1000;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .25s ease;
+      padding:20px;
+    }
+
+    .qv-modal.active{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .qv-modal-content{
+      background:#161616;
+      border-radius:20px;
+      max-width:700px;
+      width:100%;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      overflow:hidden;
+      position:relative;
+      border:1px solid rgba(255,255,255,.08);
+      transform:scale(.96);
+      transition:transform .25s ease;
+    }
+
+    .qv-modal.active .qv-modal-content{ transform:scale(1); }
+
+    .qv-modal-content img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    .qv-info{
+      padding:32px 28px;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .qv-close{
+      position:absolute;
+      top:14px; right:14px;
+      background:rgba(0,0,0,.5);
+      color:#fff;
+      border:none;
+      width:32px; height:32px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:1rem;
+      z-index:2;
+    }
+
+    .qv-name{
+      font-family:'Bebas Neue',sans-serif;
+      font-size:2.2rem;
+      letter-spacing:1px;
+      margin-bottom:8px;
+      color:#fff;
+    }
+
+    .qv-price{
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:1.4rem;
+      font-weight:700;
+      color:#fe6901;
+      margin-bottom:14px;
+    }
+
+    .qv-desc{
+      color:#bbb;
+      font-size:.9rem;
+      line-height:1.6;
+      margin-bottom:22px;
+    }
+
+    .qv-viewfull{
+      color:#fe6901;
+      text-decoration:none;
+      font-weight:700;
+      font-size:.85rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      margin-bottom:16px;
+    }
+
+    .qv-viewfull:hover{ text-decoration:underline; }
+
+    @media(max-width:600px){
+      .shop-header h1{ font-size:3.5rem; }
+      .shop-grid{ padding:0 5% 80px; }
+      .qv-modal-content{ grid-template-columns:1fr; max-height:88vh; overflow-y:auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html" class="active">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="beerhole.html#about">About Us</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="shop-header">
+    <h1>Shop</h1>
+  </div>
+
+  <div class="shop-grid">
+
+    <a href="complete-set.html" class="product-card">
+      <div class="product-card-media">
+        <img src="https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop" alt="Complete Set">
+        <div class="product-card-overlay">
+          <button type="button" class="pc-btn pc-quickadd" onclick="quickAdd(event,'complete-set')">Quick Add</button>
+          <button type="button" class="pc-btn pc-quickview" onclick="quickView(event,{id:'complete-set',name:'Complete Set',price:'$399.99',desc:'Everything you need to play — boards, bags, discs, and carry bag included.',img:'https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=800&auto=format&fit=crop',link:'complete-set.html'})">Quick View</button>
+        </div>
+      </div>
+      <div class="product-card-body">
+        <span class="product-card-name">Complete Set</span>
+        <span class="product-card-price">$399.99</span>
+      </div>
+      <p class="product-card-desc">Everything you need to play — boards, bags, discs, and carry bag included.</p>
+      <div class="product-card-btn">View Product</div>
+    </a>
+
+    <a href="extra-bags.html" class="product-card">
+      <div class="product-card-media">
+        <img src="https://images.unsplash.com/photo-1602632003094-0494b73b7c4a?w=600&auto=format&fit=crop" alt="Extra Bags">
+        <div class="product-card-overlay">
+          <button type="button" class="pc-btn pc-quickadd" onclick="quickAdd(event,'extra-bags')">Quick Add</button>
+          <button type="button" class="pc-btn pc-quickview" onclick="quickView(event,{id:'extra-bags',name:'Extra Bags',price:'$19.99',desc:'Regulation-sized bean bags built for consistent tossing and outdoor durability.',img:'https://images.unsplash.com/photo-1602632003094-0494b73b7c4a?w=800&auto=format&fit=crop',link:'extra-bags.html'})">Quick View</button>
+        </div>
+      </div>
+      <div class="product-card-body">
+        <span class="product-card-name">Extra Bags</span>
+        <span class="product-card-price">$19.99</span>
+      </div>
+      <p class="product-card-desc">Regulation-sized bean bags built for consistent tossing and outdoor durability.</p>
+      <div class="product-card-btn">View Product</div>
+    </a>
+
+    <a href="merch.html" class="product-card">
+      <div class="product-card-media">
+        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&auto=format&fit=crop" alt="Merch">
+        <div class="product-card-overlay">
+          <button type="button" class="pc-btn pc-quickview" onclick="quickView(event,{id:'merch',name:'Merch',price:'Coming Soon',desc:'Rep BeerHole at every party. Premium apparel for people who play hard.',img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&auto=format&fit=crop',link:'merch.html',comingSoon:true})">Quick View</button>
+        </div>
+      </div>
+      <div class="product-card-body">
+        <span class="product-card-name">Merch</span>
+        <span class="product-card-price">Coming Soon</span>
+      </div>
+      <p class="product-card-desc">Rep BeerHole at every party. Premium apparel for people who play hard.</p>
+      <div class="product-card-btn">Coming Soon</div>
+    </a>
+
+  </div>
+
+  <footer>© 2026 BeerHole — Built For Backyard Legends 🍻</footer>
+
+  <div class="qv-modal" id="quickview-modal" onclick="if(event.target===this) closeQuickView()">
+    <div class="qv-modal-content">
+      <button class="qv-close" onclick="closeQuickView()">✕</button>
+      <img id="qv-img" src="" alt="">
+      <div class="qv-info">
+        <h3 class="qv-name" id="qv-name"></h3>
+        <p class="qv-price" id="qv-price"></p>
+        <p class="qv-desc" id="qv-desc"></p>
+        <a href="#" id="qv-link" class="qv-viewfull">View Full Details →</a>
+        <button type="button" class="pc-btn pc-quickadd" id="qv-quickadd-btn" onclick="quickAdd(event, qvCurrentId)">Quick Add — <span id="qv-price-btn"></span></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let qvCurrentId = null;
+
+    function quickAdd(e, productId){
+      e.preventDefault();
+      e.stopPropagation();
+      window.location.href = `shipping-quote.html?product=${encodeURIComponent(productId)}`;
+    }
+
+    function quickView(e, p){
+      e.preventDefault();
+      e.stopPropagation();
+      qvCurrentId = p.id;
+      document.getElementById('qv-img').src = p.img;
+      document.getElementById('qv-name').textContent = p.name;
+      document.getElementById('qv-price').textContent = p.price;
+      document.getElementById('qv-price-btn').textContent = p.price;
+      document.getElementById('qv-desc').textContent = p.desc;
+      document.getElementById('qv-link').href = p.link;
+      document.getElementById('qv-quickadd-btn').style.display = p.comingSoon ? 'none' : 'block';
+      document.getElementById('quickview-modal').classList.add('active');
+    }
+
+    function closeQuickView(){
+      document.getElementById('quickview-modal').classList.remove('active');
+    }
+  </script>
+
+</body>
+</html>
