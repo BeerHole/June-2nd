@@ -158,10 +158,37 @@ async function validateAddressWithShippo(address) {
     });
     const data = await resp.json();
     const results = data.validation_results;
+
     if (results && results.is_valid === false) {
       const messages = (results.messages || []).map(m => m.text).filter(Boolean);
       return { valid: false, messages };
     }
+
+    // Shippo can mark an address "valid" even after silently correcting it —
+    // wrong city/state for the ZIP, a fixed street spelling, a changed ZIP,
+    // etc. Any correction at all means what the customer typed doesn't
+    // exactly match a real address, so we reject it and make them re-enter
+    // it correctly rather than quietly shipping to Shippo's substituted
+    // version. Precision/geocode info (not real corrections) is left alone.
+    const messages = (results && results.messages) || [];
+    const corrections = messages.filter(m => m.type === 'address_correction');
+    if (corrections.length > 0) {
+      const texts = corrections.map(m => m.text).filter(Boolean);
+      return {
+        valid: false,
+        messages: texts.length ? texts : ["That address doesn't exactly match our records. Please double check it."],
+      };
+    }
+
+    // Missing info needed to actually ship to this address (e.g. incomplete
+    // street details) — also treat as invalid.
+    if (data.is_complete === false) {
+      return {
+        valid: false,
+        messages: ['That address is missing details needed to ship to it. Please double check it.'],
+      };
+    }
+
     return { valid: true };
   } catch (err) {
     console.error('Shippo address validation failed (failing open):', err.message);
