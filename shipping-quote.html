@@ -73,6 +73,25 @@
       gap:10px;
     }
 
+    .address-fields{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .address-row{
+      display:flex;
+      gap:10px;
+    }
+
+    .state-input{ max-width:70px; }
+    .zip-input-small{ max-width:120px; }
+
+    .btn-quote-full{
+      width:100%;
+      margin-top:14px;
+    }
+
     input[type="text"]{
       flex:1;
       padding:14px 16px;
@@ -210,6 +229,7 @@
       <p>Select this and enter your address below — no shipping charge. This is the address we'll deliver to, so double check it.</p>
 
       <div class="local-address-fields" id="local-address-fields">
+        <input type="text" id="local-name" placeholder="Full name">
         <input type="text" id="local-street" placeholder="Street address">
         <input type="text" id="local-city" placeholder="City">
         <input type="text" id="local-zip" placeholder="ZIP code" inputmode="numeric" maxlength="10">
@@ -219,10 +239,16 @@
 
     <div class="card">
       <h2>Ship It To Me</h2>
-      <div class="zip-row">
-        <input type="text" id="zip-input" placeholder="Enter ZIP code" inputmode="numeric" maxlength="10">
-        <button type="button" class="btn-quote" id="quote-btn" onclick="getQuote()">Get Quote</button>
+      <div class="address-fields">
+        <input type="text" id="ship-name" placeholder="Full name">
+        <input type="text" id="ship-street" placeholder="Street address">
+        <div class="address-row">
+          <input type="text" id="ship-city" placeholder="City">
+          <input type="text" id="ship-state" placeholder="State" maxlength="2" class="state-input">
+          <input type="text" id="ship-zip" placeholder="ZIP" inputmode="numeric" maxlength="10" class="zip-input-small">
+        </div>
       </div>
+      <button type="button" class="btn-quote btn-quote-full" id="quote-btn" onclick="getQuote()">Get Quote</button>
       <p class="error-msg" id="error-msg"></p>
       <div class="quote-result" id="quote-result">
         <div class="quote-amount" id="quote-amount"></div>
@@ -271,11 +297,12 @@
       validateLocalFields();
     });
 
-    ['local-street', 'local-city', 'local-zip'].forEach(id => {
+    ['local-name', 'local-street', 'local-city', 'local-zip'].forEach(id => {
       document.getElementById(id).addEventListener('input', validateLocalFields);
     });
 
     function validateLocalFields(){
+      const name = document.getElementById('local-name').value.trim();
       const street = document.getElementById('local-street').value.trim();
       const city = document.getElementById('local-city').value.trim();
       const zip = document.getElementById('local-zip').value.trim();
@@ -284,7 +311,7 @@
 
       errorEl.style.display = 'none';
 
-      if (!street && !city && !zip) {
+      if (!name && !street && !city && !zip) {
         continueBtn.classList.remove('active');
         return;
       }
@@ -296,7 +323,7 @@
         return;
       }
 
-      if (street && city && LOCAL_ZIPS.has(zip)) {
+      if (name && street && city && LOCAL_ZIPS.has(zip)) {
         continueBtn.classList.add('active');
         continueBtn.textContent = 'Continue to Checkout — Free Local Delivery';
       } else {
@@ -305,11 +332,20 @@
     }
 
     async function getQuote(){
-      const zip = document.getElementById('zip-input').value.trim();
+      const name = document.getElementById('ship-name').value.trim();
+      const street1 = document.getElementById('ship-street').value.trim();
+      const city = document.getElementById('ship-city').value.trim();
+      const state = document.getElementById('ship-state').value.trim();
+      const zip = document.getElementById('ship-zip').value.trim();
       const errorEl = document.getElementById('error-msg');
       const btn = document.getElementById('quote-btn');
       errorEl.style.display = 'none';
 
+      if (!name || !street1 || !city || !state) {
+        errorEl.textContent = 'Please fill in your full name and complete address.';
+        errorEl.style.display = 'block';
+        return;
+      }
       if (!/^\d{5}(-\d{4})?$/.test(zip)) {
         errorEl.textContent = 'Please enter a valid 5-digit ZIP code.';
         errorEl.style.display = 'block';
@@ -323,12 +359,13 @@
         const resp = await fetch('/shipping-rate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ product: productId, zip }),
+          body: JSON.stringify({ product: productId, name, street1, city, state, zip }),
         });
         const data = await resp.json();
 
         if (!resp.ok) {
-          throw new Error(data.error || 'Could not get a shipping rate.');
+          const detail = data.details && data.details.length ? ' (' + data.details.join('; ') + ')' : '';
+          throw new Error((data.error || 'Could not get a shipping rate.') + detail);
         }
 
         currentQuoteId = data.quoteId;
@@ -381,7 +418,7 @@
       }
 
       if (method === 'local') {
-        [['localStreet', 'local-street'], ['localCity', 'local-city'], ['localZip', 'local-zip']].forEach(([fieldName, elId]) => {
+        [['localName', 'local-name'], ['localStreet', 'local-street'], ['localCity', 'local-city'], ['localZip', 'local-zip']].forEach(([fieldName, elId]) => {
           const input = document.createElement('input');
           input.type = 'hidden';
           input.name = fieldName;

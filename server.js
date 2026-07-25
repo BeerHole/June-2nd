@@ -55,7 +55,7 @@ const PRICE_MAP = {
 // Fallback flat rate, used when no live Shippo quote is available (no API key
 // configured yet, quote expired, or the Shippo call failed).
 const STANDARD_SHIPPING = {
-  'complete-set': 3500, // $35.00 — rough estimate, will be replaced by live quotes
+  'complete-set': 5000, // $50.00 — fallback estimate, used only if live Shippo quotes are unavailable
   'extra-bags': 699,    // $6.99
   'merch': 599,         // $5.99
 };
@@ -140,25 +140,75 @@ function buildShippingOptions(product, quotedAmount) {
   }];
 }
 
+// Validates a full address against Shippo's address validation API (the same
+// service that computes rates and prints labels, so "valid" here means
+// genuinely deliverable, not just well-formatted). Fails open (treats the
+// address as valid) if Shippo can't be reached, so a Shippo outage doesn't
+// block every checkout — this is a data-quality/anti-mismatch check, not the
+// sole line of defense.
+async function validateAddressWithShippo(address) {
+  try {
+    const resp = await fetch('https://api.goshippo.com/addresses/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `ShippoToken ${process.env.SHIPPO_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...address, validate: true }),
+    });
+    const data = await resp.json();
+    const results = data.validation_results;
+    if (results && results.is_valid === false) {
+      const messages = (results.messages || []).map(m => m.text).filter(Boolean);
+      return { valid: false, messages };
+    }
+    return { valid: true };
+  } catch (err) {
+    console.error('Shippo address validation failed (failing open):', err.message);
+    return { valid: true };
+  }
+}
+
 // ─── Get a live shipping quote (Shippo) ──────────────────────────────────────
 // Called from shipping-quote.html before checkout. Returns a quoteId — the
-// actual dollar amount is never trusted from the client afterward, only this
-// server-generated id is passed along to /create-checkout-session.
+// actual dollar amount (and validated address) is never trusted from the
+// client afterward, only this server-generated id is passed along to
+// /create-checkout-session.
 app.post('/shipping-rate', express.json(), async (req, res) => {
   try {
-    const { product, zip } = req.body || {};
+    const { product, name, street1, city, state, zip } = req.body || {};
     const pkg = PACKAGE_INFO[product];
 
     if (!pkg) {
       return res.status(400).json({ error: `No package info for product: "${product}".` });
     }
+    if (!name || !street1 || !city || !state) {
+      return res.status(400).json({ error: 'Please enter your full name and complete shipping address.' });
+    }
     if (!/^\d{5}(-\d{4})?$/.test(String(zip || '').trim())) {
       return res.status(400).json({ error: 'Please enter a valid 5-digit ZIP code.' });
     }
 
+    const addressTo = {
+      name: name.trim(),
+      street1: street1.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      zip: zip.trim(),
+      country: 'US',
+    };
+
     const haveShippoConfig = process.env.SHIPPO_API_KEY && SHIPPO_FROM_ADDRESS.street1 && SHIPPO_FROM_ADDRESS.zip;
 
     if (haveShippoConfig) {
+      const validation = await validateAddressWithShippo(addressTo);
+      if (validation.valid === false) {
+        return res.status(400).json({
+          error: "We couldn't verify that address as deliverable. Please double check it.",
+          details: validation.messages,
+        });
+      }
+
       try {
         const resp = await fetch('https://api.goshippo.com/shipments/', {
           method: 'POST',
@@ -168,7 +218,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
           },
           body: JSON.stringify({
             address_from: SHIPPO_FROM_ADDRESS,
-            address_to: { zip: zip.trim(), country: 'US' },
+            address_to: addressTo,
             parcels: [{
               length: String(pkg.length),
               width: String(pkg.width),
@@ -192,6 +242,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
             service: cheapest.servicelevel?.name,
             estimatedDays: cheapest.estimated_days,
             live: true,
+            address: addressTo,
           });
           return res.json({
             quoteId,
@@ -209,8 +260,10 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
     }
 
     // Fallback: no Shippo key/origin configured yet, or the live call failed.
+    // Still store the address so checkout can use it in place of Stripe's
+    // address collection — just without live validation behind it.
     const fallbackAmount = STANDARD_SHIPPING[product] ?? 0;
-    const quoteId = saveQuote(product, fallbackAmount, { live: false });
+    const quoteId = saveQuote(product, fallbackAmount, { live: false, address: addressTo });
     res.json({ quoteId, amount: fallbackAmount, live: false });
   } catch (err) {
     console.error('Shipping rate error:', err.message);
@@ -250,27 +303,51 @@ app.post('/create-checkout-session', async (req, res) => {
       // ask Stripe to collect a shipping address at all, so there's nothing
       // for the customer to change or override on Stripe's own page. The
       // free option is only ever offered for a server-verified local ZIP.
-      const { localStreet, localCity, localZip } = req.body;
-      if (!localStreet || !localCity || !isLocalZip(localZip)) {
+      const { localName, localStreet, localCity, localZip } = req.body;
+      if (!localName || !localStreet || !localCity || !isLocalZip(localZip)) {
         return res.status(400).json({
           error: 'A valid local address (within the Spokane / Spokane Valley delivery area) is required for free local delivery.',
         });
       }
       sessionConfig.metadata = {
         deliveryMethod: 'local',
+        shipToName: localName,
         localAddress: `${localStreet}, ${localCity}, WA ${localZip}`,
       };
     } else {
-      // Standard shipping: Stripe collects the real delivery address, and
-      // the single "Standard Shipping" option carries the quoted (or
-      // fallback flat) rate computed earlier.
-      let quotedAmount;
+      // Standard shipping. If we have a valid quote on file, it was created
+      // from a specific, already-collected (and where possible, Shippo-
+      // validated) address — we use that exact address and skip Stripe's own
+      // address screen, so there's no second address field where a customer
+      // could swap in a different, differently-priced destination after the
+      // fact. If they skipped the quote step entirely, fall back to letting
+      // Stripe collect the address with the flat estimated rate (there's no
+      // per-address quote to mismatch against in that case).
+      let quote = null;
       if (req.body.quoteId) {
-        const quote = getValidQuote(req.body.quoteId, product);
-        if (quote) quotedAmount = quote.amount;
+        quote = getValidQuote(req.body.quoteId, product);
       }
-      sessionConfig.shipping_address_collection = { allowed_countries: ['US'] };
-      sessionConfig.shipping_options = buildShippingOptions(product, quotedAmount);
+
+      if (quote && quote.meta && quote.meta.address) {
+        const addr = quote.meta.address;
+        sessionConfig.line_items.push({
+          price_data: {
+            currency: 'usd',
+            product_data: { name: `Shipping to ${addr.city}, ${addr.state} ${addr.zip}` },
+            unit_amount: quote.amount,
+          },
+          quantity: 1,
+        });
+        sessionConfig.metadata = {
+          deliveryMethod: 'standard',
+          shipToName: addr.name,
+          shipToAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
+          shippingLive: String(!!(quote.meta && quote.meta.live)),
+        };
+      } else {
+        sessionConfig.shipping_address_collection = { allowed_countries: ['US'] };
+        sessionConfig.shipping_options = buildShippingOptions(product, undefined);
+      }
     }
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
