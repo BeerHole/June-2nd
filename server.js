@@ -79,6 +79,13 @@ async function fulfillOrder(session) {
   const pkg = PACKAGE_INFO[meta.product];
   if (!pkg) {
     console.error(`⚠️ Order ${session.id}: no package info for product "${meta.product}" — label NOT purchased automatically. Please buy it manually in Shippo.`);
+    try {
+      await stripe.checkout.sessions.update(session.id, {
+        metadata: { ...meta, labelPurchased: 'false', labelError: `No package dimensions configured for product "${meta.product}" — buy the label manually in Shippo.` },
+      });
+    } catch (err) {
+      console.error(`Order ${session.id}: also failed to record the missing-package-info failure in Stripe metadata (${err.message}).`);
+    }
     return;
   }
 
