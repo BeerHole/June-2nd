@@ -151,6 +151,17 @@
       padding-left:26px;
     }
 
+    .local-address-fields{
+      display:none;
+      flex-direction:column;
+      gap:10px;
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .local-address-fields.visible{ display:flex; }
+
     .continue-btn{
       display:block;
       width:100%;
@@ -196,7 +207,14 @@
         <input type="radio" name="delivery-method" id="local-radio" value="local">
         Free hand delivery — Spokane / Spokane Valley, WA area
       </label>
-      <p>Select this and skip straight to checkout — no shipping charge.</p>
+      <p>Select this and enter your address below — no shipping charge. This is the address we'll deliver to, so double check it.</p>
+
+      <div class="local-address-fields" id="local-address-fields">
+        <input type="text" id="local-street" placeholder="Street address">
+        <input type="text" id="local-city" placeholder="City">
+        <input type="text" id="local-zip" placeholder="ZIP code" inputmode="numeric" maxlength="10">
+        <p class="error-msg" id="local-error-msg"></p>
+      </div>
     </div>
 
     <div class="card">
@@ -222,6 +240,17 @@
       'extra-bags': { name: 'Extra Bags' },
     };
 
+    // Same local delivery area as the server checks — kept in sync manually.
+    const LOCAL_ZIPS = new Set([
+      '99201','99202','99203','99204','99205','99206','99207','99208','99212','99213',
+      '99214','99215','99216','99217','99218','99223','99224','99001','99003','99004',
+      '99005','99006','99009','99011','99012','99013','99016','99019','99021','99022',
+      '99023','99025','99026','99027','99030','99031','99036','99037','99039','99101',
+      '99109','99110','99114','99122','99139','99156','99163','99180','99347','83814',
+      '83815','83854','83877','83858','83835','83805','83811','83843','83850','83861',
+      '83869','83804',
+    ]);
+
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('product');
     let currentQuoteId = null;
@@ -237,9 +266,43 @@
     document.getElementById('local-radio').addEventListener('change', () => {
       deliveryMethod = 'local';
       currentQuoteId = null;
-      document.getElementById('continue-btn').classList.add('active');
-      document.getElementById('continue-btn').textContent = 'Continue to Checkout — Free Local Delivery';
+      document.getElementById('quote-result').style.display = 'none';
+      document.getElementById('local-address-fields').classList.add('visible');
+      validateLocalFields();
     });
+
+    ['local-street', 'local-city', 'local-zip'].forEach(id => {
+      document.getElementById(id).addEventListener('input', validateLocalFields);
+    });
+
+    function validateLocalFields(){
+      const street = document.getElementById('local-street').value.trim();
+      const city = document.getElementById('local-city').value.trim();
+      const zip = document.getElementById('local-zip').value.trim();
+      const errorEl = document.getElementById('local-error-msg');
+      const continueBtn = document.getElementById('continue-btn');
+
+      errorEl.style.display = 'none';
+
+      if (!street && !city && !zip) {
+        continueBtn.classList.remove('active');
+        return;
+      }
+
+      if (zip && !LOCAL_ZIPS.has(zip)) {
+        errorEl.textContent = "Sorry, that ZIP code isn't in our free local delivery area. Try the \"Ship It To Me\" option below instead.";
+        errorEl.style.display = 'block';
+        continueBtn.classList.remove('active');
+        return;
+      }
+
+      if (street && city && LOCAL_ZIPS.has(zip)) {
+        continueBtn.classList.add('active');
+        continueBtn.textContent = 'Continue to Checkout — Free Local Delivery';
+      } else {
+        continueBtn.classList.remove('active');
+      }
+    }
 
     async function getQuote(){
       const zip = document.getElementById('zip-input').value.trim();
@@ -271,6 +334,7 @@
         currentQuoteId = data.quoteId;
         deliveryMethod = 'standard';
         document.getElementById('local-radio').checked = false;
+        document.getElementById('local-address-fields').classList.remove('visible');
 
         const dollars = (data.amount / 100).toFixed(2);
         document.getElementById('quote-amount').textContent = `$${dollars}`;
@@ -316,12 +380,24 @@
         f.appendChild(quoteInput);
       }
 
+      if (method === 'local') {
+        [['localStreet', 'local-street'], ['localCity', 'local-city'], ['localZip', 'local-zip']].forEach(([fieldName, elId]) => {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = fieldName;
+          input.value = document.getElementById(elId).value.trim();
+          f.appendChild(input);
+        });
+      }
+
       document.body.appendChild(f);
       f.submit();
     }
 
     function goToCheckout(){
       if (deliveryMethod === 'local') {
+        const zip = document.getElementById('local-zip').value.trim();
+        if (!LOCAL_ZIPS.has(zip)) return; // guarded, but double-check before submit
         submitCheckout(null, 'local');
       } else if (currentQuoteId) {
         submitCheckout(currentQuoteId, 'standard');

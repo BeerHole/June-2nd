@@ -81,6 +81,23 @@ const SHIPPO_FROM_ADDRESS = {
   country: process.env.SHIPPO_FROM_COUNTRY || 'US',
 };
 
+// ─── Local delivery ZIP codes ────────────────────────────────────────────────
+// Free hand-delivery is only offered within this area (Spokane / Spokane
+// Valley and surrounding communities, including nearby North Idaho towns).
+const LOCAL_ZIP_CODES = new Set([
+  '99201','99202','99203','99204','99205','99206','99207','99208','99212','99213',
+  '99214','99215','99216','99217','99218','99223','99224','99001','99003','99004',
+  '99005','99006','99009','99011','99012','99013','99016','99019','99021','99022',
+  '99023','99025','99026','99027','99030','99031','99036','99037','99039','99101',
+  '99109','99110','99114','99122','99139','99156','99163','99180','99347','83814',
+  '83815','83854','83877','83858','83835','83805','83811','83843','83850','83861',
+  '83869','83804',
+]);
+
+function isLocalZip(zip) {
+  return LOCAL_ZIP_CODES.has(String(zip || '').trim());
+}
+
 // ─── In-memory shipping quote store ──────────────────────────────────────────
 // Quotes are short-lived and only used to carry a trusted, server-computed
 // shipping amount from /shipping-rate into /create-checkout-session — the
@@ -105,26 +122,12 @@ function getValidQuote(id, product) {
   return quote;
 }
 
-// Customers pick one of two delivery methods on shipping-quote.html before
-// ever reaching Stripe: free local hand-delivery (Spokane / Spokane Valley
-// area), or standard shipping at the quoted (or fallback flat) rate. Only
-// the option they actually chose is sent to Stripe — showing both here would
-// let anyone select "free local delivery" regardless of where they live.
-const LOCAL_DELIVERY_OPTION = {
-  shipping_rate_data: {
-    type: 'fixed_amount',
-    fixed_amount: { amount: 0, currency: 'usd' },
-    display_name: 'Free Local Delivery (Spokane / Spokane Valley area)',
-    delivery_estimate: {
-      minimum: { unit: 'business_day', value: 1 },
-      maximum: { unit: 'business_day', value: 5 },
-    },
-  },
-};
-
-function standardShippingOption(product, quotedAmount) {
+// Local hand-delivery orders never reach this — they skip Stripe's shipping
+// section entirely (see /create-checkout-session). This only builds the
+// "Standard Shipping" option, at the quoted (or fallback flat) rate.
+function buildShippingOptions(product, quotedAmount) {
   const standardAmount = quotedAmount ?? STANDARD_SHIPPING[product] ?? 0;
-  return {
+  return [{
     shipping_rate_data: {
       type: 'fixed_amount',
       fixed_amount: { amount: standardAmount, currency: 'usd' },
@@ -134,15 +137,7 @@ function standardShippingOption(product, quotedAmount) {
         maximum: { unit: 'business_day', value: 10 },
       },
     },
-  };
-}
-
-function buildShippingOptions(product, quotedAmount, deliveryMethod) {
-  if (deliveryMethod === 'local') {
-    return [LOCAL_DELIVERY_OPTION];
-  }
-  // Default to standard shipping (covers 'standard' and any legacy/missing value).
-  return [standardShippingOption(product, quotedAmount)];
+  }];
 }
 
 // ─── Get a live shipping quote (Shippo) ──────────────────────────────────────
@@ -235,17 +230,9 @@ app.post('/create-checkout-session', async (req, res) => {
       });
     }
 
-    // If the customer got a shipping quote first, use that trusted,
-    // server-stored amount instead of the flat placeholder rate.
-    let quotedAmount;
-    if (req.body.quoteId) {
-      const quote = getValidQuote(req.body.quoteId, product);
-      if (quote) quotedAmount = quote.amount;
-    }
-
     const deliveryMethod = req.body.deliveryMethod === 'local' ? 'local' : 'standard';
 
-    const session = await stripe.checkout.sessions.create({
+    const sessionConfig = {
       line_items: [
         {
           price: priceId,
@@ -253,13 +240,40 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      shipping_address_collection: {
-        allowed_countries: ['US'],
-      },
-      shipping_options: buildShippingOptions(product, quotedAmount, deliveryMethod),
       success_url: `${process.env.DOMAIN}/success.html`,
       cancel_url: `${process.env.DOMAIN}/beerhole.html`,
-    });
+    };
+
+    if (deliveryMethod === 'local') {
+      // Local hand-delivery: the address was already collected and validated
+      // as being within the local ZIP list on shipping-quote.html — we do NOT
+      // ask Stripe to collect a shipping address at all, so there's nothing
+      // for the customer to change or override on Stripe's own page. The
+      // free option is only ever offered for a server-verified local ZIP.
+      const { localStreet, localCity, localZip } = req.body;
+      if (!localStreet || !localCity || !isLocalZip(localZip)) {
+        return res.status(400).json({
+          error: 'A valid local address (within the Spokane / Spokane Valley delivery area) is required for free local delivery.',
+        });
+      }
+      sessionConfig.metadata = {
+        deliveryMethod: 'local',
+        localAddress: `${localStreet}, ${localCity}, WA ${localZip}`,
+      };
+    } else {
+      // Standard shipping: Stripe collects the real delivery address, and
+      // the single "Standard Shipping" option carries the quoted (or
+      // fallback flat) rate computed earlier.
+      let quotedAmount;
+      if (req.body.quoteId) {
+        const quote = getValidQuote(req.body.quoteId, product);
+        if (quote) quotedAmount = quote.amount;
+      }
+      sessionConfig.shipping_address_collection = { allowed_countries: ['US'] };
+      sessionConfig.shipping_options = buildShippingOptions(product, quotedAmount);
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     res.redirect(303, session.url);
   } catch (err) {
