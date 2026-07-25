@@ -298,6 +298,52 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
   }
 });
 
+// ─── Verify a local delivery address (Shippo) ────────────────────────────────
+// Same idea as /shipping-rate but for free local hand-delivery: no rate is
+// computed, but the address still goes through the same strict Shippo
+// validation (reject on anything Shippo has to correct) before it's locked
+// to a quoteId that /create-checkout-session will trust.
+app.post('/verify-local-address', express.json(), async (req, res) => {
+  try {
+    const { product, name, street1, city, state, zip } = req.body || {};
+
+    if (!PRICE_MAP[product]) {
+      return res.status(400).json({ error: `Unknown product: "${product}".` });
+    }
+    if (!name || !street1 || !city || !state) {
+      return res.status(400).json({ error: 'Please enter your full name and complete address.' });
+    }
+    if (!isLocalZip(zip)) {
+      return res.status(400).json({ error: "That ZIP code isn't in our free local delivery area." });
+    }
+
+    const addressTo = {
+      name: name.trim(),
+      street1: street1.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      zip: String(zip).trim(),
+      country: 'US',
+    };
+
+    if (process.env.SHIPPO_API_KEY) {
+      const validation = await validateAddressWithShippo(addressTo);
+      if (validation.valid === false) {
+        return res.status(400).json({
+          error: "We couldn't verify that address as deliverable. Please double check it.",
+          details: validation.messages,
+        });
+      }
+    }
+
+    const quoteId = saveQuote(product, 0, { live: !!process.env.SHIPPO_API_KEY, address: addressTo });
+    res.json({ quoteId });
+  } catch (err) {
+    console.error('Local address verification error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── Create Checkout Session ──────────────────────────────────────────────────
 app.post('/create-checkout-session', async (req, res) => {
   try {
@@ -325,21 +371,24 @@ app.post('/create-checkout-session', async (req, res) => {
     };
 
     if (deliveryMethod === 'local') {
-      // Local hand-delivery: the address was already collected and validated
-      // as being within the local ZIP list on shipping-quote.html — we do NOT
-      // ask Stripe to collect a shipping address at all, so there's nothing
-      // for the customer to change or override on Stripe's own page. The
-      // free option is only ever offered for a server-verified local ZIP.
-      const { localName, localStreet, localCity, localZip } = req.body;
-      if (!localName || !localStreet || !localCity || !isLocalZip(localZip)) {
+      // Local hand-delivery: the address must have already been verified via
+      // /verify-local-address (same strict Shippo checks as standard
+      // shipping — reject on anything Shippo has to correct, not just a
+      // ZIP-list check). We never trust raw address fields sent directly to
+      // this endpoint, only a quoteId pointing at a server-stored, verified
+      // address — and we do NOT ask Stripe to collect a shipping address at
+      // all, so there's nothing for the customer to change afterward.
+      const quote = req.body.quoteId ? getValidQuote(req.body.quoteId, product) : null;
+      if (!quote || !quote.meta || !quote.meta.address) {
         return res.status(400).json({
-          error: 'A valid local address (within the Spokane / Spokane Valley delivery area) is required for free local delivery.',
+          error: 'A verified local address is required for free local delivery. Please verify your address first.',
         });
       }
+      const addr = quote.meta.address;
       sessionConfig.metadata = {
         deliveryMethod: 'local',
-        shipToName: localName,
-        localAddress: `${localStreet}, ${localCity}, WA ${localZip}`,
+        shipToName: addr.name,
+        localAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
       };
     } else {
       // Standard shipping. If we have a valid quote on file, it was created

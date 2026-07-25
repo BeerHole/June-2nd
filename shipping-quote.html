@@ -181,6 +181,15 @@
 
     .local-address-fields.visible{ display:flex; }
 
+    .local-verified-msg{
+      display:none;
+      color:#00c864;
+      font-size:.85rem;
+      margin-top:10px;
+    }
+
+    .local-verified-msg.visible{ display:block; }
+
     .continue-btn{
       display:block;
       width:100%;
@@ -231,9 +240,14 @@
       <div class="local-address-fields" id="local-address-fields">
         <input type="text" id="local-name" placeholder="Full name">
         <input type="text" id="local-street" placeholder="Street address">
-        <input type="text" id="local-city" placeholder="City">
-        <input type="text" id="local-zip" placeholder="ZIP code" inputmode="numeric" maxlength="10">
+        <div class="address-row">
+          <input type="text" id="local-city" placeholder="City">
+          <input type="text" id="local-state" placeholder="State" maxlength="2" class="state-input" value="WA">
+          <input type="text" id="local-zip" placeholder="ZIP" inputmode="numeric" maxlength="10" class="zip-input-small">
+        </div>
+        <button type="button" class="btn-quote btn-quote-full" id="local-verify-btn" onclick="verifyLocalAddress()">Verify Address</button>
         <p class="error-msg" id="local-error-msg"></p>
+        <p class="local-verified-msg" id="local-verified-msg">✓ Address verified</p>
       </div>
     </div>
 
@@ -280,6 +294,7 @@
     const params = new URLSearchParams(window.location.search);
     const productId = params.get('product');
     let currentQuoteId = null;
+    let localQuoteId = null;
     let deliveryMethod = null;
 
     if (PRODUCTS[productId]) {
@@ -311,42 +326,79 @@
     document.getElementById('local-radio').addEventListener('change', () => {
       deliveryMethod = 'local';
       currentQuoteId = null;
+      localQuoteId = null;
       document.getElementById('quote-result').style.display = 'none';
       document.getElementById('local-address-fields').classList.add('visible');
-      validateLocalFields();
+      document.getElementById('local-verified-msg').classList.remove('visible');
+      document.getElementById('continue-btn').classList.remove('active');
     });
 
-    ['local-name', 'local-street', 'local-city', 'local-zip'].forEach(id => {
-      document.getElementById(id).addEventListener('input', validateLocalFields);
+    // Editing ANY local field after it's been verified invalidates that
+    // verification — same anti-stale-quote protection as standard shipping.
+    ['local-name', 'local-street', 'local-city', 'local-state', 'local-zip'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        if (!localQuoteId) return;
+        localQuoteId = null;
+        document.getElementById('local-verified-msg').classList.remove('visible');
+        const continueBtn = document.getElementById('continue-btn');
+        continueBtn.classList.remove('active');
+        continueBtn.textContent = 'Continue to Checkout';
+        const errorEl = document.getElementById('local-error-msg');
+        errorEl.textContent = 'Address changed — verify it again before continuing.';
+        errorEl.style.display = 'block';
+      });
     });
 
-    function validateLocalFields(){
+    async function verifyLocalAddress(){
       const name = document.getElementById('local-name').value.trim();
-      const street = document.getElementById('local-street').value.trim();
+      const street1 = document.getElementById('local-street').value.trim();
       const city = document.getElementById('local-city').value.trim();
+      const state = document.getElementById('local-state').value.trim();
       const zip = document.getElementById('local-zip').value.trim();
       const errorEl = document.getElementById('local-error-msg');
-      const continueBtn = document.getElementById('continue-btn');
-
+      const btn = document.getElementById('local-verify-btn');
+      const verifiedMsg = document.getElementById('local-verified-msg');
       errorEl.style.display = 'none';
+      verifiedMsg.classList.remove('visible');
 
-      if (!name && !street && !city && !zip) {
-        continueBtn.classList.remove('active');
+      if (!name || !street1 || !city || !state) {
+        errorEl.textContent = 'Please fill in your full name and complete address.';
+        errorEl.style.display = 'block';
         return;
       }
-
-      if (zip && !LOCAL_ZIPS.has(zip)) {
+      if (!LOCAL_ZIPS.has(zip)) {
         errorEl.textContent = "Sorry, that ZIP code isn't in our free local delivery area. Try the \"Ship It To Me\" option below instead.";
         errorEl.style.display = 'block';
-        continueBtn.classList.remove('active');
         return;
       }
 
-      if (name && street && city && LOCAL_ZIPS.has(zip)) {
+      btn.disabled = true;
+      btn.textContent = 'Verifying…';
+
+      try {
+        const resp = await fetch('/verify-local-address', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product: productId, name, street1, city, state, zip }),
+        });
+        const data = await resp.json();
+
+        if (!resp.ok) {
+          const detail = data.details && data.details.length ? ' (' + data.details.join('; ') + ')' : '';
+          throw new Error((data.error || 'Could not verify address.') + detail);
+        }
+
+        localQuoteId = data.quoteId;
+        verifiedMsg.classList.add('visible');
+        const continueBtn = document.getElementById('continue-btn');
         continueBtn.classList.add('active');
         continueBtn.textContent = 'Continue to Checkout — Free Local Delivery';
-      } else {
-        continueBtn.classList.remove('active');
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Verify Address';
       }
     }
 
@@ -391,6 +443,7 @@
         deliveryMethod = 'standard';
         document.getElementById('local-radio').checked = false;
         document.getElementById('local-address-fields').classList.remove('visible');
+        localQuoteId = null;
 
         const dollars = (data.amount / 100).toFixed(2);
         document.getElementById('quote-amount').textContent = `$${dollars}`;
@@ -436,25 +489,14 @@
         f.appendChild(quoteInput);
       }
 
-      if (method === 'local') {
-        [['localName', 'local-name'], ['localStreet', 'local-street'], ['localCity', 'local-city'], ['localZip', 'local-zip']].forEach(([fieldName, elId]) => {
-          const input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = fieldName;
-          input.value = document.getElementById(elId).value.trim();
-          f.appendChild(input);
-        });
-      }
-
       document.body.appendChild(f);
       f.submit();
     }
 
     function goToCheckout(){
       if (deliveryMethod === 'local') {
-        const zip = document.getElementById('local-zip').value.trim();
-        if (!LOCAL_ZIPS.has(zip)) return; // guarded, but double-check before submit
-        submitCheckout(null, 'local');
+        if (!localQuoteId) return; // must be verified first
+        submitCheckout(localQuoteId, 'local');
       } else if (currentQuoteId) {
         submitCheckout(currentQuoteId, 'standard');
       }
