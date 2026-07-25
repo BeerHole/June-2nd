@@ -22,14 +22,183 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
+  // Acknowledge Stripe immediately — label purchase involves a live Shippo
+  // call that can take a few seconds, and Stripe expects a fast response or
+  // it'll consider the webhook failed and retry (which we handle safely,
+  // but there's no reason to make Stripe wait).
+  res.json({ received: true });
+
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     console.log('✅ Payment complete! Session ID:', session.id);
-    // TODO: fulfill the order (send confirmation email, update inventory, etc.)
+    fulfillOrder(session).catch(err => {
+      console.error(`Order fulfillment error for session ${session.id}:`, err.message);
+    });
+  }
+});
+
+// ─── Order fulfillment: auto-purchase a Shippo label on payment ─────────────
+// Runs after checkout.session.completed. Local delivery needs no label
+// (hand-delivered). Standard shipping gets a label bought automatically,
+// using the exact rate the customer was quoted where possible.
+//
+// Idempotency note: whether a label was already purchased is tracked in the
+// Checkout Session's own metadata on Stripe (not in our server's memory),
+// specifically so a duplicate webhook delivery — or our server restarting
+// between the original event and a retry — can't cause a second label to be
+// bought for the same order.
+async function fulfillOrder(session) {
+  const meta = session.metadata || {};
+
+  if (meta.deliveryMethod === 'local') {
+    console.log(`📦 LOCAL DELIVERY — order ${session.id}: hand-deliver to ${meta.shipToName}, ${meta.localAddress}`);
+    return;
   }
 
-  res.json({ received: true });
-});
+  if (meta.deliveryMethod !== 'standard') {
+    console.warn(`Order ${session.id} has no recognized deliveryMethod ("${meta.deliveryMethod}") — skipping auto label purchase.`);
+    return;
+  }
+
+  // Re-fetch the session from Stripe itself (durable) rather than trusting
+  // only the webhook payload, so we can check whether a label was already
+  // bought for this order before ever attempting a purchase.
+  let freshSession;
+  try {
+    freshSession = await stripe.checkout.sessions.retrieve(session.id);
+  } catch (err) {
+    console.error(`⚠️ Order ${session.id}: couldn't re-check session status (${err.message}) — skipping to avoid a possible duplicate purchase. Please check manually.`);
+    return;
+  }
+
+  if (freshSession.metadata && freshSession.metadata.labelPurchased === 'true') {
+    console.log(`Order ${session.id} already has a label purchased — skipping duplicate webhook.`);
+    return;
+  }
+
+  const pkg = PACKAGE_INFO[meta.product];
+  if (!pkg) {
+    console.error(`⚠️ Order ${session.id}: no package info for product "${meta.product}" — label NOT purchased automatically. Please buy it manually in Shippo.`);
+    return;
+  }
+
+  const addressTo = {
+    name: meta.shipToName,
+    street1: meta.shipStreet1,
+    city: meta.shipCity,
+    state: meta.shipState,
+    zip: meta.shipZip,
+    country: 'US',
+  };
+
+  let purchased = null;
+  try {
+    if (meta.shippoRateId) {
+      purchased = await purchaseShippoLabel(meta.shippoRateId);
+      if (!purchased) {
+        console.warn(`Order ${session.id}: original quoted rate could not be purchased (likely expired) — getting a fresh rate instead.`);
+      }
+    }
+    if (!purchased) {
+      const freshRateId = await getFreshShippoRate(pkg, addressTo);
+      if (freshRateId) {
+        purchased = await purchaseShippoLabel(freshRateId);
+      }
+    }
+  } catch (err) {
+    console.error(`⚠️ Order ${session.id}: label purchase error — ${err.message}`);
+  }
+
+  if (purchased) {
+    console.log(`✅ Label purchased for order ${session.id} — tracking ${purchased.trackingNumber}, label: ${purchased.labelUrl}`);
+    try {
+      await stripe.checkout.sessions.update(session.id, {
+        metadata: {
+          ...meta,
+          labelPurchased: 'true',
+          trackingNumber: purchased.trackingNumber || '',
+          trackingUrl: purchased.trackingUrlProvider || '',
+          labelUrl: purchased.labelUrl || '',
+        },
+      });
+    } catch (err) {
+      console.error(`Order ${session.id}: label was purchased but updating Stripe metadata failed (${err.message}) — check Shippo directly for the label/tracking.`);
+    }
+  } else {
+    console.error(`⚠️ MANUAL ACTION NEEDED — Order ${session.id}: could not auto-purchase a label. Ship to: ${meta.shipToName}, ${addressTo.street1}, ${addressTo.city}, ${addressTo.state} ${addressTo.zip}. Please buy the label manually in Shippo.`);
+    try {
+      await stripe.checkout.sessions.update(session.id, {
+        metadata: { ...meta, labelPurchased: 'false', labelError: 'Auto-purchase failed — buy manually in Shippo.' },
+      });
+    } catch (err) {
+      console.error(`Order ${session.id}: also failed to record the label-purchase failure in Stripe metadata (${err.message}).`);
+    }
+  }
+}
+
+// Attempts to purchase a Shippo shipping label for a given rate. Returns
+// null (rather than throwing) if the purchase didn't succeed, so the caller
+// can fall back to getting a fresh rate instead.
+async function purchaseShippoLabel(rateId) {
+  try {
+    const resp = await fetch('https://api.goshippo.com/transactions/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `ShippoToken ${process.env.SHIPPO_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rate: rateId, label_file_type: 'PDF', async: false }),
+    });
+    const data = await resp.json();
+    if (data.status === 'SUCCESS') {
+      return {
+        trackingNumber: data.tracking_number,
+        trackingUrlProvider: data.tracking_url_provider,
+        labelUrl: data.label_url,
+      };
+    }
+    console.warn('Shippo transaction not successful:', data.status, JSON.stringify(data.messages || ''));
+    return null;
+  } catch (err) {
+    console.error('purchaseShippoLabel error:', err.message);
+    return null;
+  }
+}
+
+// Gets a fresh rate quote (used when the original quoted rate has expired or
+// otherwise can't be purchased) and returns the cheapest rate's id.
+async function getFreshShippoRate(pkg, addressTo) {
+  try {
+    const resp = await fetch('https://api.goshippo.com/shipments/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `ShippoToken ${process.env.SHIPPO_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        address_from: SHIPPO_FROM_ADDRESS,
+        address_to: addressTo,
+        parcels: [{
+          length: String(pkg.length),
+          width: String(pkg.width),
+          height: String(pkg.height),
+          distance_unit: 'in',
+          weight: String(pkg.weight),
+          mass_unit: 'lb',
+        }],
+        async: false,
+      }),
+    });
+    const data = await resp.json();
+    const rates = (data.rates || []).filter(r => r.amount);
+    if (rates.length === 0) return null;
+    const cheapest = rates.reduce((a, b) => parseFloat(a.amount) < parseFloat(b.amount) ? a : b);
+    return cheapest.object_id;
+  } catch (err) {
+    console.error('getFreshShippoRate error:', err.message);
+    return null;
+  }
+}
 
 // ─── JSON + form parsing for all other routes ────────────────────────────────
 app.use(express.json());
@@ -272,6 +441,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
             estimatedDays: cheapest.estimated_days,
             live: true,
             address: cleanedAddress,
+            rateId: cheapest.object_id,
           });
           return res.json({
             quoteId,
@@ -393,8 +563,13 @@ app.post('/create-checkout-session', async (req, res) => {
       const addr = quote.meta.address;
       sessionConfig.metadata = {
         deliveryMethod: 'local',
+        product,
         shipToName: addr.name,
         localAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
+        shipStreet1: addr.street1,
+        shipCity: addr.city,
+        shipState: addr.state,
+        shipZip: addr.zip,
       };
     } else {
       // Standard shipping. There is no "skip" path anymore — a valid quote
@@ -421,9 +596,18 @@ app.post('/create-checkout-session', async (req, res) => {
       });
       sessionConfig.metadata = {
         deliveryMethod: 'standard',
+        product,
         shipToName: addr.name,
         shipToAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
+        shipStreet1: addr.street1,
+        shipCity: addr.city,
+        shipState: addr.state,
+        shipZip: addr.zip,
         shippingLive: String(!!(quote.meta && quote.meta.live)),
+        carrier: (quote.meta && quote.meta.carrier) || '',
+        service: (quote.meta && quote.meta.service) || '',
+        shippoRateId: (quote.meta && quote.meta.rateId) || '',
+        labelPurchased: 'false',
       };
     }
 
