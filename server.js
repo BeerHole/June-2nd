@@ -105,37 +105,44 @@ function getValidQuote(id, product) {
   return quote;
 }
 
-// Every product offers the same two choices at checkout: pick it up free if
-// you're local (Spokane / Spokane Valley area — hand-delivered), or pay the
-// standard shipping rate for that product. If a valid live quote is passed
-// in, it's used in place of the flat placeholder rate.
-function buildShippingOptions(product, quotedAmount) {
-  const standardAmount = quotedAmount ?? STANDARD_SHIPPING[product] ?? 0;
+// Customers pick one of two delivery methods on shipping-quote.html before
+// ever reaching Stripe: free local hand-delivery (Spokane / Spokane Valley
+// area), or standard shipping at the quoted (or fallback flat) rate. Only
+// the option they actually chose is sent to Stripe — showing both here would
+// let anyone select "free local delivery" regardless of where they live.
+const LOCAL_DELIVERY_OPTION = {
+  shipping_rate_data: {
+    type: 'fixed_amount',
+    fixed_amount: { amount: 0, currency: 'usd' },
+    display_name: 'Free Local Delivery (Spokane / Spokane Valley area)',
+    delivery_estimate: {
+      minimum: { unit: 'business_day', value: 1 },
+      maximum: { unit: 'business_day', value: 5 },
+    },
+  },
+};
 
-  return [
-    {
-      shipping_rate_data: {
-        type: 'fixed_amount',
-        fixed_amount: { amount: 0, currency: 'usd' },
-        display_name: 'Free Local Delivery (Spokane / Spokane Valley area)',
-        delivery_estimate: {
-          minimum: { unit: 'business_day', value: 1 },
-          maximum: { unit: 'business_day', value: 5 },
-        },
+function standardShippingOption(product, quotedAmount) {
+  const standardAmount = quotedAmount ?? STANDARD_SHIPPING[product] ?? 0;
+  return {
+    shipping_rate_data: {
+      type: 'fixed_amount',
+      fixed_amount: { amount: standardAmount, currency: 'usd' },
+      display_name: 'Standard Shipping',
+      delivery_estimate: {
+        minimum: { unit: 'business_day', value: 3 },
+        maximum: { unit: 'business_day', value: 10 },
       },
     },
-    {
-      shipping_rate_data: {
-        type: 'fixed_amount',
-        fixed_amount: { amount: standardAmount, currency: 'usd' },
-        display_name: 'Standard Shipping',
-        delivery_estimate: {
-          minimum: { unit: 'business_day', value: 3 },
-          maximum: { unit: 'business_day', value: 10 },
-        },
-      },
-    },
-  ];
+  };
+}
+
+function buildShippingOptions(product, quotedAmount, deliveryMethod) {
+  if (deliveryMethod === 'local') {
+    return [LOCAL_DELIVERY_OPTION];
+  }
+  // Default to standard shipping (covers 'standard' and any legacy/missing value).
+  return [standardShippingOption(product, quotedAmount)];
 }
 
 // ─── Get a live shipping quote (Shippo) ──────────────────────────────────────
@@ -236,6 +243,8 @@ app.post('/create-checkout-session', async (req, res) => {
       if (quote) quotedAmount = quote.amount;
     }
 
+    const deliveryMethod = req.body.deliveryMethod === 'local' ? 'local' : 'standard';
+
     const session = await stripe.checkout.sessions.create({
       line_items: [
         {
@@ -247,7 +256,7 @@ app.post('/create-checkout-session', async (req, res) => {
       shipping_address_collection: {
         allowed_countries: ['US'],
       },
-      shipping_options: buildShippingOptions(product, quotedAmount),
+      shipping_options: buildShippingOptions(product, quotedAmount, deliveryMethod),
       success_url: `${process.env.DOMAIN}/success.html`,
       cancel_url: `${process.env.DOMAIN}/beerhole.html`,
     });

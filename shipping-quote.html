@@ -291,7 +291,7 @@
       }
     }
 
-    function submitCheckout(quoteId){
+    function submitCheckout(quoteId, method){
       const f = document.createElement('form');
       f.method = 'POST';
       f.action = '/create-checkout-session';
@@ -301,6 +301,12 @@
       productInput.name = 'product';
       productInput.value = productId;
       f.appendChild(productInput);
+
+      const methodInput = document.createElement('input');
+      methodInput.type = 'hidden';
+      methodInput.name = 'deliveryMethod';
+      methodInput.value = method;
+      f.appendChild(methodInput);
 
       if (quoteId) {
         const quoteInput = document.createElement('input');
@@ -316,14 +322,14 @@
 
     function goToCheckout(){
       if (deliveryMethod === 'local') {
-        submitCheckout(null);
+        submitCheckout(null, 'local');
       } else if (currentQuoteId) {
-        submitCheckout(currentQuoteId);
+        submitCheckout(currentQuoteId, 'standard');
       }
     }
 
     function skipToCheckout(){
-      submitCheckout(null);
+      submitCheckout(null, 'standard');
     }
   </script>
 
