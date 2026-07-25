@@ -79,13 +79,13 @@ async function fulfillOrder(session) {
   const pkg = PACKAGE_INFO[meta.product];
   if (!pkg) {
     console.error(`⚠️ Order ${session.id}: no package info for product "${meta.product}" — label NOT purchased automatically. Please buy it manually in Shippo.`);
+    const failMeta = { ...meta, labelPurchased: 'false', labelError: `No package dimensions configured for product "${meta.product}" — buy the label manually in Shippo.` };
     try {
-      await stripe.checkout.sessions.update(session.id, {
-        metadata: { ...meta, labelPurchased: 'false', labelError: `No package dimensions configured for product "${meta.product}" — buy the label manually in Shippo.` },
-      });
+      await stripe.checkout.sessions.update(session.id, { metadata: failMeta });
     } catch (err) {
       console.error(`Order ${session.id}: also failed to record the missing-package-info failure in Stripe metadata (${err.message}).`);
     }
+    await syncPaymentIntentMetadata(freshSession.payment_intent, failMeta);
     return;
   }
 
@@ -118,28 +118,42 @@ async function fulfillOrder(session) {
 
   if (purchased) {
     console.log(`✅ Label purchased for order ${session.id} — tracking ${purchased.trackingNumber}, label: ${purchased.labelUrl}`);
+    const successMeta = {
+      ...meta,
+      labelPurchased: 'true',
+      trackingNumber: purchased.trackingNumber || '',
+      trackingUrl: purchased.trackingUrlProvider || '',
+      labelUrl: purchased.labelUrl || '',
+    };
     try {
-      await stripe.checkout.sessions.update(session.id, {
-        metadata: {
-          ...meta,
-          labelPurchased: 'true',
-          trackingNumber: purchased.trackingNumber || '',
-          trackingUrl: purchased.trackingUrlProvider || '',
-          labelUrl: purchased.labelUrl || '',
-        },
-      });
+      await stripe.checkout.sessions.update(session.id, { metadata: successMeta });
     } catch (err) {
       console.error(`Order ${session.id}: label was purchased but updating Stripe metadata failed (${err.message}) — check Shippo directly for the label/tracking.`);
     }
+    await syncPaymentIntentMetadata(freshSession.payment_intent, successMeta);
   } else {
     console.error(`⚠️ MANUAL ACTION NEEDED — Order ${session.id}: could not auto-purchase a label. Ship to: ${meta.shipToName}, ${addressTo.street1}, ${addressTo.city}, ${addressTo.state} ${addressTo.zip}. Please buy the label manually in Shippo.`);
+    const failMeta = { ...meta, labelPurchased: 'false', labelError: 'Auto-purchase failed — buy manually in Shippo.' };
     try {
-      await stripe.checkout.sessions.update(session.id, {
-        metadata: { ...meta, labelPurchased: 'false', labelError: 'Auto-purchase failed — buy manually in Shippo.' },
-      });
+      await stripe.checkout.sessions.update(session.id, { metadata: failMeta });
     } catch (err) {
       console.error(`Order ${session.id}: also failed to record the label-purchase failure in Stripe metadata (${err.message}).`);
     }
+    await syncPaymentIntentMetadata(freshSession.payment_intent, failMeta);
+  }
+}
+
+// Mirrors metadata onto the underlying PaymentIntent, not just the Checkout
+// Session. Stripe's dashboard "Payments" list shows the PaymentIntent/Charge,
+// which has its own separate metadata field from the Checkout Session — so
+// without this, order details (address, tracking, etc.) wouldn't show up on
+// the page a person naturally lands on when clicking into a payment.
+async function syncPaymentIntentMetadata(paymentIntentId, metadata) {
+  if (!paymentIntentId) return;
+  try {
+    await stripe.paymentIntents.update(paymentIntentId, { metadata });
+  } catch (err) {
+    console.error(`Failed to mirror metadata onto PaymentIntent ${paymentIntentId}: ${err.message}`);
   }
 }
 
@@ -617,6 +631,11 @@ app.post('/create-checkout-session', async (req, res) => {
         labelPurchased: 'false',
       };
     }
+
+    // Mirror the same metadata onto the resulting PaymentIntent, not just the
+    // Checkout Session — Stripe's dashboard "Payments" list shows the
+    // PaymentIntent/Charge, which otherwise wouldn't have this data at all.
+    sessionConfig.payment_intent_data = { metadata: sessionConfig.metadata };
 
     const session = await stripe.checkout.sessions.create(sessionConfig);
 
