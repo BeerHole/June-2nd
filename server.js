@@ -122,24 +122,6 @@ function getValidQuote(id, product) {
   return quote;
 }
 
-// Local hand-delivery orders never reach this — they skip Stripe's shipping
-// section entirely (see /create-checkout-session). This only builds the
-// "Standard Shipping" option, at the quoted (or fallback flat) rate.
-function buildShippingOptions(product, quotedAmount) {
-  const standardAmount = quotedAmount ?? STANDARD_SHIPPING[product] ?? 0;
-  return [{
-    shipping_rate_data: {
-      type: 'fixed_amount',
-      fixed_amount: { amount: standardAmount, currency: 'usd' },
-      display_name: 'Standard Shipping',
-      delivery_estimate: {
-        minimum: { unit: 'business_day', value: 3 },
-        maximum: { unit: 'business_day', value: 10 },
-      },
-    },
-  }];
-}
-
 // Validates a full address against Shippo's address validation API (the same
 // service that computes rates and prints labels, so "valid" here means
 // genuinely deliverable, not just well-formatted). Fails open (treats the
@@ -415,39 +397,34 @@ app.post('/create-checkout-session', async (req, res) => {
         localAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
       };
     } else {
-      // Standard shipping. If we have a valid quote on file, it was created
-      // from a specific, already-collected (and where possible, Shippo-
-      // validated) address — we use that exact address and skip Stripe's own
-      // address screen, so there's no second address field where a customer
-      // could swap in a different, differently-priced destination after the
-      // fact. If they skipped the quote step entirely, fall back to letting
-      // Stripe collect the address with the flat estimated rate (there's no
-      // per-address quote to mismatch against in that case).
-      let quote = null;
-      if (req.body.quoteId) {
-        quote = getValidQuote(req.body.quoteId, product);
+      // Standard shipping. There is no "skip" path anymore — a valid quote
+      // (from a specific, already-collected, and where possible Shippo-
+      // validated address) is required. We use that exact address and never
+      // fall back to letting Stripe collect one on its own, so there's no
+      // second, unverified address field and no way to bypass verification
+      // by omitting a quoteId.
+      const quote = req.body.quoteId ? getValidQuote(req.body.quoteId, product) : null;
+      if (!quote || !quote.meta || !quote.meta.address) {
+        return res.status(400).json({
+          error: 'A verified shipping address is required. Please get a shipping quote first.',
+        });
       }
 
-      if (quote && quote.meta && quote.meta.address) {
-        const addr = quote.meta.address;
-        sessionConfig.line_items.push({
-          price_data: {
-            currency: 'usd',
-            product_data: { name: `Shipping to ${addr.city}, ${addr.state} ${addr.zip}` },
-            unit_amount: quote.amount,
-          },
-          quantity: 1,
-        });
-        sessionConfig.metadata = {
-          deliveryMethod: 'standard',
-          shipToName: addr.name,
-          shipToAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
-          shippingLive: String(!!(quote.meta && quote.meta.live)),
-        };
-      } else {
-        sessionConfig.shipping_address_collection = { allowed_countries: ['US'] };
-        sessionConfig.shipping_options = buildShippingOptions(product, undefined);
-      }
+      const addr = quote.meta.address;
+      sessionConfig.line_items.push({
+        price_data: {
+          currency: 'usd',
+          product_data: { name: `Shipping to ${addr.city}, ${addr.state} ${addr.zip}` },
+          unit_amount: quote.amount,
+        },
+        quantity: 1,
+      });
+      sessionConfig.metadata = {
+        deliveryMethod: 'standard',
+        shipToName: addr.name,
+        shipToAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
+        shippingLive: String(!!(quote.meta && quote.meta.live)),
+      };
     }
 
     const session = await stripe.checkout.sessions.create(sessionConfig);

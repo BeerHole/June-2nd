@@ -208,15 +208,6 @@
       pointer-events:auto;
     }
 
-    .skip-link{
-      display:block;
-      text-align:center;
-      margin-top:16px;
-      color:#777;
-      font-size:.82rem;
-      text-decoration:underline;
-      cursor:pointer;
-    }
   </style>
 </head>
 <body>
@@ -271,7 +262,6 @@
     </div>
 
     <button type="button" class="continue-btn" id="continue-btn" onclick="goToCheckout()">Continue to Checkout</button>
-    <span class="skip-link" onclick="skipToCheckout()">Skip — use standard estimated shipping instead</span>
   </div>
 
   <script>
@@ -500,10 +490,6 @@
       } else if (currentQuoteId) {
         submitCheckout(currentQuoteId, 'standard');
       }
-    }
-
-    function skipToCheckout(){
-      submitCheckout(null, 'standard');
     }
   </script>
 
