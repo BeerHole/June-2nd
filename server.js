@@ -164,24 +164,32 @@ async function validateAddressWithShippo(address) {
       return { valid: false, messages };
     }
 
-    // Shippo can mark an address "valid" even after silently correcting it —
-    // wrong city/state for the ZIP, a fixed street spelling, a changed ZIP,
-    // etc. Any correction at all means what the customer typed doesn't
-    // exactly match a real address, so we reject it and make them re-enter
-    // it correctly rather than quietly shipping to Shippo's substituted
-    // version. Precision/geocode info (not real corrections) is left alone.
+    // Shippo can mark an address "valid" even after silently correcting it.
+    // What matters is WHAT it corrected: a change to city, state, or ZIP
+    // means what was typed points to a genuinely different place — that's
+    // the real "wrong address" risk, so we reject it. A missing street type
+    // ("Ave", "St"), abbreviation, or capitalization fix doesn't change
+    // where the package goes, so those are accepted silently — using
+    // Shippo's cleaned version as the address of record from here on.
     const messages = (results && results.messages) || [];
     const corrections = messages.filter(m => m.type === 'address_correction');
-    if (corrections.length > 0) {
-      const texts = corrections.map(m => m.text).filter(Boolean);
+    const locationMismatchCodes = new Set([
+      'administrative_area_change',    // state
+      'locality_change',               // city
+      'postal_code_change',            // zip
+      'subadministrative_area_change', // county
+      'dependent_locality_change',     // neighborhood/district
+    ]);
+    const locationMismatches = corrections.filter(m => locationMismatchCodes.has(m.code));
+    if (locationMismatches.length > 0) {
+      const texts = locationMismatches.map(m => m.text).filter(Boolean);
       return {
         valid: false,
-        messages: texts.length ? texts : ["That address doesn't exactly match our records. Please double check it."],
+        messages: texts.length ? texts : ["That address doesn't match a real location. Please double check it."],
       };
     }
 
-    // Missing info needed to actually ship to this address (e.g. incomplete
-    // street details) — also treat as invalid.
+    // Missing info needed to actually ship to this address — also invalid.
     if (data.is_complete === false) {
       return {
         valid: false,
@@ -189,7 +197,17 @@ async function validateAddressWithShippo(address) {
       };
     }
 
-    return { valid: true };
+    return {
+      valid: true,
+      cleaned: {
+        name: data.name || address.name,
+        street1: data.street1 || address.street1,
+        city: data.city || address.city,
+        state: data.state || address.state,
+        zip: data.zip || address.zip,
+        country: data.country || address.country || 'US',
+      },
+    };
   } catch (err) {
     console.error('Shippo address validation failed (failing open):', err.message);
     return { valid: true };
@@ -226,6 +244,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
     };
 
     const haveShippoConfig = process.env.SHIPPO_API_KEY && SHIPPO_FROM_ADDRESS.street1 && SHIPPO_FROM_ADDRESS.zip;
+    let cleanedAddress = addressTo;
 
     if (haveShippoConfig) {
       const validation = await validateAddressWithShippo(addressTo);
@@ -235,6 +254,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
           details: validation.messages,
         });
       }
+      if (validation.cleaned) cleanedAddress = validation.cleaned;
 
       try {
         const resp = await fetch('https://api.goshippo.com/shipments/', {
@@ -245,7 +265,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
           },
           body: JSON.stringify({
             address_from: SHIPPO_FROM_ADDRESS,
-            address_to: addressTo,
+            address_to: cleanedAddress,
             parcels: [{
               length: String(pkg.length),
               width: String(pkg.width),
@@ -269,7 +289,7 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
             service: cheapest.servicelevel?.name,
             estimatedDays: cheapest.estimated_days,
             live: true,
-            address: addressTo,
+            address: cleanedAddress,
           });
           return res.json({
             quoteId,
@@ -288,9 +308,11 @@ app.post('/shipping-rate', express.json(), async (req, res) => {
 
     // Fallback: no Shippo key/origin configured yet, or the live call failed.
     // Still store the address so checkout can use it in place of Stripe's
-    // address collection — just without live validation behind it.
+    // address collection — just without live validation behind it. Uses the
+    // Shippo-cleaned address if validation ran but the rate lookup itself
+    // failed, otherwise the raw customer input.
     const fallbackAmount = STANDARD_SHIPPING[product] ?? 0;
-    const quoteId = saveQuote(product, fallbackAmount, { live: false, address: addressTo });
+    const quoteId = saveQuote(product, fallbackAmount, { live: false, address: cleanedAddress });
     res.json({ quoteId, amount: fallbackAmount, live: false });
   } catch (err) {
     console.error('Shipping rate error:', err.message);
@@ -326,6 +348,7 @@ app.post('/verify-local-address', express.json(), async (req, res) => {
       country: 'US',
     };
 
+    let cleanedAddress = addressTo;
     if (process.env.SHIPPO_API_KEY) {
       const validation = await validateAddressWithShippo(addressTo);
       if (validation.valid === false) {
@@ -334,9 +357,10 @@ app.post('/verify-local-address', express.json(), async (req, res) => {
           details: validation.messages,
         });
       }
+      if (validation.cleaned) cleanedAddress = validation.cleaned;
     }
 
-    const quoteId = saveQuote(product, 0, { live: !!process.env.SHIPPO_API_KEY, address: addressTo });
+    const quoteId = saveQuote(product, 0, { live: !!process.env.SHIPPO_API_KEY, address: cleanedAddress });
     res.json({ quoteId });
   } catch (err) {
     console.error('Local address verification error:', err.message);
