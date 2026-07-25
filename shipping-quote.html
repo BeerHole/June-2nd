@@ -289,6 +289,25 @@
       document.getElementById('quote-btn').disabled = true;
     }
 
+    // If the customer edits ANY address field after already getting a quote,
+    // that quote no longer reflects what's on screen — invalidate it so they
+    // can't continue to checkout on a stale (possibly wrong, possibly
+    // typo-corrected) address without re-quoting first.
+    ['ship-name', 'ship-street', 'ship-city', 'ship-state', 'ship-zip'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        if (!currentQuoteId) return; // no active quote yet, nothing to invalidate
+        currentQuoteId = null;
+        deliveryMethod = null;
+        document.getElementById('quote-result').style.display = 'none';
+        const continueBtn = document.getElementById('continue-btn');
+        continueBtn.classList.remove('active');
+        continueBtn.textContent = 'Continue to Checkout';
+        const errorEl = document.getElementById('error-msg');
+        errorEl.textContent = 'Address changed — get an updated quote before continuing.';
+        errorEl.style.display = 'block';
+      });
+    });
+
     document.getElementById('local-radio').addEventListener('change', () => {
       deliveryMethod = 'local';
       currentQuoteId = null;
