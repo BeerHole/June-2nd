@@ -369,6 +369,14 @@
       margin-right: 20px;
     }
 
+    @media(max-width:700px){
+      .feature-grid .feature-card{
+        flex: 0 0 82vw;
+        margin-right: 16px;
+        padding: 90px 24px;
+      }
+    }
+
     .feature-card{
       background:#ffffff;
       padding:160px 30px;
@@ -1334,7 +1342,9 @@
     // Seamless card-by-card scroll (3 sets of cards)
     const featWrap = document.getElementById('feat-wrap');
     if (featWrap) {
-      const CARD_WIDTH = 520;
+      const firstFeatCard = featWrap.querySelector('.feature-card');
+      const featCardStyle = getComputedStyle(firstFeatCard);
+      const CARD_WIDTH = firstFeatCard.getBoundingClientRect().width + parseFloat(featCardStyle.marginRight);
       const NUM_CARDS = 6;
       const loopWidth = CARD_WIDTH * NUM_CARDS;
       const SLIDE_DURATION = 900; // ms for slide animation
@@ -1419,7 +1429,9 @@
       const wrap = document.getElementById('rules-wrap');
       if (!wrap) return;
 
-      const CARD_WIDTH = 520;
+      const firstRuleCard = wrap.querySelector('.feature-card');
+      const ruleCardStyle = getComputedStyle(firstRuleCard);
+      const CARD_WIDTH = firstRuleCard.getBoundingClientRect().width + parseFloat(ruleCardStyle.marginRight);
       const NUM_CARDS = 7;
       const SLIDE_DURATION = 900;
       const PAUSE_BETWEEN = 5000;
