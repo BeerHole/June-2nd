@@ -14,7 +14,7 @@ const PRODUCTS = [
     key: 'STRIPE_PRICE_COMPLETE_SET',
     name: 'BeerHole Complete Set',
     description: 'Everything you need to play — boards, bags, discs, and carry bag included.',
-    unit_amount: 39999, // $399.99
+    unit_amount: 49999, // $499.99
   },
   {
     key: 'STRIPE_PRICE_EXTRA_BAGS',
