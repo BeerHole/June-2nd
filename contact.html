@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us — BeerHole</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#ffffff;
+      color:#1a1a1a;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(255,255,255,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      border-bottom-color:#fe6901;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Hero ── */
+    .contact-hero{
+      min-height:45vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:140px 8% 60px;
+      background:
+        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+    }
+
+    .contact-hero h1{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:5.5rem;
+      color:#fe6901;
+      letter-spacing:3px;
+      line-height:1;
+      margin-bottom:20px;
+    }
+
+    .contact-hero p{
+      font-size:1.2rem;
+      color:#ddd;
+      max-width:600px;
+      margin:0 auto;
+      line-height:1.8;
+    }
+
+    /* ── Intro message ── */
+    .contact-intro{
+      max-width:760px;
+      margin:0 auto;
+      padding:80px 8% 20px;
+      text-align:center;
+    }
+
+    .contact-intro p{
+      font-size:1.15rem;
+      color:#444;
+      line-height:1.9;
+      margin-bottom:22px;
+    }
+
+    /* ── Contact card ── */
+    .contact-wrap{
+      max-width:900px;
+      margin:0 auto;
+      padding:40px 8% 100px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+      gap:24px;
+    }
+
+    .contact-card{
+      background:#ffffff;
+      padding:40px 30px;
+      text-align:center;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+      transition:.3s;
+    }
+
+    .contact-card:hover{
+      transform:translateY(-8px);
+      border-color:#fe6901;
+      box-shadow:0 14px 30px rgba(254,105,1,.15);
+    }
+
+    .contact-icon{
+      font-size:2.5rem;
+      margin-bottom:16px;
+    }
+
+    .contact-card h3{
+      font-family:'Inter',sans-serif;
+      font-size:1.2rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      color:#1a1a1a;
+      margin-bottom:12px;
+    }
+
+    .contact-card a,
+    .contact-card p{
+      font-size:1rem;
+      color:#555;
+      line-height:1.7;
+      text-decoration:none;
+    }
+
+    .contact-card a{
+      color:#fe6901;
+      font-weight:700;
+    }
+
+    .contact-card a:hover{
+      text-decoration:underline;
+    }
+
+    /* ── CTA ── */
+    .contact-cta{
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      text-align:center;
+      padding:70px 8%;
+    }
+
+    .contact-cta h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:3rem;
+      color:#fff;
+      letter-spacing:2px;
+      margin-bottom:16px;
+    }
+
+    .contact-cta p{
+      font-size:1.1rem;
+      color:rgba(255,255,255,.9);
+    }
+
+    footer{
+      background:#ffffff;
+      border-top:1px solid rgba(0,0,0,.08);
+      text-align:center;
+      padding:30px;
+      color:#666;
+      font-size:.9rem;
+    }
+
+    @media(max-width:700px){
+      .contact-hero h1{ font-size:3.5rem; }
+      .contact-cta h2{ font-size:2.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="contact-hero">
+    <div>
+      <h1>Contact Us</h1>
+      <p>Questions, order help, or wholesale inquiries — we'd love to hear from you.</p>
+    </div>
+  </div>
+
+  <div class="contact-intro">
+    <p>
+      At BeerHole, every message matters to us. Whether you have a question about an order, need help with sizing or shipping, want to explore a bulk or wholesale purchase, or simply have feedback on your game — we're here and genuinely glad to help.
+    </p>
+    <p>
+      We're a small, hands-on team, so when you reach out, you're talking directly to the people who build and run BeerHole. We do our best to respond to every message promptly and personally.
+    </p>
+  </div>
+
+  <div class="contact-wrap">
+    <div class="contact-card">
+      <div class="contact-icon">✉️</div>
+      <h3>Email Us</h3>
+      <a href="mailto:beerhole2026@gmail.com">beerhole2026@gmail.com</a>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">📍</div>
+      <h3>Based In</h3>
+      <p>Spokane, Washington</p>
+    </div>
+    <div class="contact-card">
+      <div class="contact-icon">⏱️</div>
+      <h3>Response Time</h3>
+      <p>We typically reply within 1–2 business days</p>
+    </div>
+  </div>
+
+  <div class="contact-cta">
+    <h2>We're Ready to Help</h2>
+    <p>No question is too small — reach out any time.</p>
+  </div>
+
+  <footer>© 2026 BeerHole — Built For Building Memories 🍻</footer>
+
+</body>
+</html>
