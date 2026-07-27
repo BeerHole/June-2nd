@@ -8,6 +8,11 @@
   <style>
     *{ margin:0; padding:0; box-sizing:border-box; }
 
+    html, body{
+      overflow-x:hidden;
+      max-width:100%;
+    }
+
     body{
       font-family:'Montserrat',sans-serif;
       background:#0a0a0a;
@@ -220,6 +225,9 @@
       .product-page{ grid-template-columns:1fr; padding-top:110px; }
       .product-gallery{ position:static; }
       .product-name{ font-size:3rem; }
+      nav{ flex-wrap:wrap; gap:8px; padding:12px 5%; }
+      .nav-links{ order:3; width:100%; justify-content:center; flex-wrap:wrap; gap:8px 16px; margin-top:8px; }
+      .nav-links a{ font-size:0.8rem; white-space:nowrap; }
     }
   </style>
 </head>

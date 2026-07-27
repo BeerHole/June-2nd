@@ -8,6 +8,11 @@
   <style>
     *{ margin:0; padding:0; box-sizing:border-box; }
 
+    html, body{
+      overflow-x:hidden;
+      max-width:100%;
+    }
+
     body{
       font-family:'Montserrat',sans-serif;
       background:#0a0a0a;
@@ -94,6 +99,7 @@
 
     input[type="text"]{
       flex:1;
+      min-width:0;
       padding:14px 16px;
       border-radius:8px;
       border:1px solid rgba(255,255,255,.15);
@@ -101,6 +107,13 @@
       color:#fff;
       font-size:1rem;
       font-family:'Montserrat',sans-serif;
+    }
+
+    @media(max-width:480px){
+      .wrap{ padding:150px 5% 80px; }
+      .address-row{ flex-wrap:wrap; }
+      .state-input, .zip-input-small{ max-width:none; flex:1 1 90px; }
+      .card{ padding:22px 18px; }
     }
 
     input[type="text"]:focus{ outline:none; border-color:#fe6901; }

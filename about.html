@@ -8,6 +8,11 @@
   <style>
     *{ margin:0; padding:0; box-sizing:border-box; }
 
+    html, body{
+      overflow-x:hidden;
+      max-width:100%;
+    }
+
     body{
       font-family:'Inter',sans-serif;
       background:#ffffff;
@@ -324,6 +329,9 @@
       .about-hero h1{ font-size:4rem; }
       .story h2{ font-size:3rem; }
       .manufacturer{ flex-direction:column; }
+      nav{ flex-wrap:wrap; gap:8px; padding:12px 5%; }
+      .nav-links{ order:3; width:100%; justify-content:center; flex-wrap:wrap; gap:8px 16px; margin-top:8px; }
+      .nav-links a{ font-size:0.8rem; white-space:nowrap; }
     }
   </style>
 </head>

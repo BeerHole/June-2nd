@@ -901,16 +901,23 @@
       /* ── Mobile Navbar ── */
       nav{
         padding:12px 5%;
-        gap:12px;
+        gap:8px;
         overflow:visible;
+        flex-wrap:wrap;
       }
 
       .nav-links{
-        gap:14px;
+        order:3;
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+        gap:8px 16px;
+        margin-top:8px;
       }
 
       .nav-links a{
         font-size:0.85rem;
+        white-space:nowrap;
       }
 
       .nav-actions{
@@ -934,6 +941,20 @@
         max-width:320px;
       }
 
+    }
+
+    /* ── Small phones: hero heading needs to shrink further to avoid clipping ── */
+    @media(max-width:480px){
+      h1{
+        font-size:2.75rem;
+        letter-spacing:1px;
+      }
+
+      .hero{
+        padding-top:130px;
+        padding-left:5%;
+        padding-right:5%;
+      }
     }
   </style>
 </head>

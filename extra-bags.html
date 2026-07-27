@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@600;700;800&family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
   <style>
     *{ margin:0; padding:0; box-sizing:border-box; }
+    html, body{ overflow-x:hidden; max-width:100%; }
     body{ font-family:'Montserrat',sans-serif; background:#0a0a0a; color:white; }
     nav{ position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; gap:30px; padding:18px 5%; background:rgba(245,240,230,0.97); box-shadow:0 2px 12px rgba(0,0,0,.15); }
     .nav-logo img{ height:55px; display:block; }
@@ -34,7 +35,7 @@
     .buy-btn:hover{ transform:translateY(-3px); box-shadow:0 12px 30px rgba(255,140,0,.5); }
     .back-link{ display:inline-block; margin-top:20px; color:#888; font-size:.9rem; text-decoration:none; text-transform:uppercase; letter-spacing:1px; }
     .back-link:hover{ color:#fe6901; }
-    @media(max-width:700px){ .product-page{ grid-template-columns:1fr; padding-top:110px; } .product-gallery{ position:static; } .product-name{ font-size:3rem; } }
+    @media(max-width:700px){ .product-page{ grid-template-columns:1fr; padding-top:110px; } .product-gallery{ position:static; } .product-name{ font-size:3rem; } nav{ flex-wrap:wrap; gap:8px; padding:12px 5%; } .nav-links{ order:3; width:100%; justify-content:center; flex-wrap:wrap; gap:8px 16px; margin-top:8px; } .nav-links a{ font-size:0.8rem; white-space:nowrap; } }
   </style>
 </head>
 <body>
