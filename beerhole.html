@@ -187,6 +187,119 @@
       background:#ffffff;
     }
 
+    /* ── Highlight video carousel ── */
+    .highlight-carousel{
+      position:relative;
+      overflow:hidden;
+      cursor:grab;
+    }
+
+    .highlight-carousel:active{
+      cursor:grabbing;
+    }
+
+    .highlight-track{
+      display:flex;
+      width:200%;
+      transition:transform .6s ease;
+    }
+
+    .highlight-dots{
+      position:absolute;
+      left:50%;
+      bottom:22px;
+      transform:translateX(-50%);
+      display:flex;
+      gap:10px;
+      z-index:3;
+    }
+
+    .highlight-dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,.4);
+      border:none;
+      cursor:pointer;
+      padding:0;
+      transition:.2s;
+    }
+
+    .highlight-dot.active{
+      background:#fe6901;
+      transform:scale(1.2);
+    }
+
+    .highlight-section{
+      position:relative;
+      flex:0 0 50%;
+      min-height:65vh;
+      display:flex;
+      align-items:center;
+      overflow:hidden;
+    }
+
+    .highlight-video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      z-index:0;
+    }
+
+    .highlight-overlay{
+      position:absolute;
+      inset:0;
+      background:linear-gradient(90deg, rgba(0,0,0,.75) 25%, rgba(0,0,0,.3) 100%);
+      z-index:1;
+    }
+
+    .highlight-content{
+      position:relative;
+      z-index:2;
+      padding:60px 8%;
+      max-width:520px;
+    }
+
+    .highlight-content h2{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:3.2rem;
+      color:#fe6901;
+      letter-spacing:2px;
+      margin-bottom:18px;
+      line-height:1;
+    }
+
+    .highlight-content p{
+      font-size:1.05rem;
+      color:#ddd;
+      line-height:1.8;
+      margin-bottom:26px;
+    }
+
+    .highlight-content a{
+      display:inline-block;
+      color:#fe6901;
+      text-decoration:none;
+      font-family:'Inter',sans-serif;
+      font-weight:800;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      border-bottom:2px solid #fe6901;
+      padding-bottom:4px;
+      transition:.2s;
+    }
+
+    .highlight-content a:hover{ opacity:.75; }
+
+    @media(max-width:700px){
+      .highlight-section{ min-height:50vh; }
+      .highlight-content h2{ font-size:2.4rem; }
+    }
+
     .swipe-hint{
       display:flex;
       align-items:center;
@@ -923,6 +1036,36 @@
 
   </section>
 
+  <div class="highlight-carousel" id="highlight-carousel">
+    <div class="highlight-track" id="highlight-track">
+
+      <section class="highlight-section">
+        <video class="highlight-video" src="beerhole-hero.mp4" autoplay muted loop playsinline></video>
+        <div class="highlight-overlay"></div>
+        <div class="highlight-content">
+          <h2>Sink The Bag</h2>
+          <p>There's no feeling like landing dead center. Every toss is a chance to cover a hole, take the lead, and hear the table erupt.</p>
+          <a href="rules.html">See The Rules →</a>
+        </div>
+      </section>
+
+      <section class="highlight-section">
+        <video class="highlight-video" src="who-makes-it.mp4" autoplay muted loop playsinline></video>
+        <div class="highlight-overlay"></div>
+        <div class="highlight-content">
+          <h2>Call Redemption</h2>
+          <p>Cover all 10 holes and the other team gets one final shot to tie it back up. Every BeerHole game comes down to the wire.</p>
+          <a href="rules.html">See The Rules →</a>
+        </div>
+      </section>
+
+    </div>
+    <div class="highlight-dots">
+      <button class="highlight-dot active" onclick="goToHighlight(0)" aria-label="Show slide 1"></button>
+      <button class="highlight-dot" onclick="goToHighlight(1)" aria-label="Show slide 2"></button>
+    </div>
+  </div>
+
   <section class="features">
 
     <div class="feature-grid-wrap" id="feat-wrap">
@@ -1080,6 +1223,92 @@
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 50);
     });
+
+    // Highlight video carousel — auto-advances between 2 slides, swipeable/draggable, pauses on interaction
+    (function() {
+      const carousel = document.getElementById('highlight-carousel');
+      const track = document.getElementById('highlight-track');
+      const dots = document.querySelectorAll('.highlight-dot');
+      if (!track) return;
+      let current = 0;
+      let paused = false;
+      let resumeTimer = null;
+
+      window.goToHighlight = function(index) {
+        current = index;
+        track.style.transform = `translateX(-${index * 50}%)`;
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        paused = true;
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(() => { paused = false; }, 11000);
+      };
+
+      setInterval(() => {
+        if (paused) return;
+        goToHighlight(current === 0 ? 1 : 0);
+        paused = false;
+      }, 11000);
+
+      // Swipe/drag support — live-follows the cursor/finger, like the carousel below it
+      let startX = 0;
+      let isDragging = false;
+      let dragPercent = 0;
+
+      function handleStart(x) {
+        startX = x;
+        isDragging = true;
+        paused = true;
+        clearTimeout(resumeTimer);
+        track.style.transition = 'none';
+      }
+
+      function handleMove(x) {
+        if (!isDragging) return;
+        const deltaPx = x - startX;
+        dragPercent = (deltaPx / carousel.offsetWidth) * 50;
+        track.style.transform = `translateX(calc(-${current * 50}% + ${dragPercent}%))`;
+      }
+
+      function handleEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        track.style.transition = '';
+        const SWIPE_THRESHOLD_PERCENT = 10;
+        if (dragPercent < -SWIPE_THRESHOLD_PERCENT || dragPercent > SWIPE_THRESHOLD_PERCENT) {
+          goToHighlight(current === 0 ? 1 : 0);
+        } else {
+          goToHighlight(current);
+        }
+        dragPercent = 0;
+      }
+
+      carousel.addEventListener('touchstart', e => handleStart(e.touches[0].clientX), { passive: true });
+      carousel.addEventListener('touchmove', e => handleMove(e.touches[0].clientX), { passive: true });
+      carousel.addEventListener('touchend', handleEnd, { passive: true });
+
+      carousel.addEventListener('mousedown', e => { e.preventDefault(); handleStart(e.clientX); });
+      window.addEventListener('mousemove', e => handleMove(e.clientX));
+      window.addEventListener('mouseup', handleEnd);
+
+      // Trackpad two-finger horizontal swipe
+      let wheelAccum = 0;
+      let wheelCooldown = false;
+      carousel.addEventListener('wheel', e => {
+        if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return; // ignore vertical scroll
+        e.preventDefault();
+        if (wheelCooldown) return;
+        paused = true;
+        clearTimeout(resumeTimer);
+        wheelAccum += e.deltaX;
+        const WHEEL_THRESHOLD = 60;
+        if (Math.abs(wheelAccum) > WHEEL_THRESHOLD) {
+          goToHighlight(current === 0 ? 1 : 0);
+          wheelAccum = 0;
+          wheelCooldown = true;
+          setTimeout(() => { wheelCooldown = false; }, 700);
+        }
+      }, { passive: false });
+    })();
 
     // Seamless card-by-card scroll (3 sets of cards)
     const featWrap = document.getElementById('feat-wrap');
