@@ -254,7 +254,7 @@ const STANDARD_SHIPPING = {
 // Dims in inches, weight in lbs. A small buffer is added on top of the raw
 // product weight/size to account for packaging materials.
 const PACKAGE_INFO = {
-  'complete-set': { length: 48, width: 31.25, height: 8.5, weight: 52 },
+  'complete-set': { length: 48, width: 31.25, height: 8.5, weight: 60 },
   'extra-bags': { length: 6, width: 6, height: 2, weight: 2.5 },
 };
 
