@@ -33,6 +33,45 @@
 
     .nav-logo img{ height:55px; display:block; }
 
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover{
+      border-bottom-color:#fe6901;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
     .wrap{
       max-width:520px;
       margin:0 auto;
@@ -114,6 +153,12 @@
       .address-row{ flex-wrap:wrap; }
       .state-input, .zip-input-small{ max-width:none; flex:1 1 90px; }
       .card{ padding:22px 18px; }
+    }
+
+    @media(max-width:700px){
+      nav{ flex-wrap:wrap; gap:8px; padding:12px 5%; }
+      .nav-links{ order:3; width:100%; justify-content:center; flex-wrap:wrap; gap:6px 8px; margin-top:8px; }
+      .nav-links a{ font-size:0.68rem; white-space:nowrap; }
     }
 
     input[type="text"]:focus{ outline:none; border-color:#fe6901; }
@@ -227,6 +272,13 @@
 
   <nav>
     <a href="beerhole.html" class="nav-logo"><img src="beerhole-logo-transparent.png" alt="BeerHole"></a>
+    <ul class="nav-links">
+      <li><a href="beerhole.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="beerhole.html#about">About Us</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
   </nav>
 
   <div class="wrap">
