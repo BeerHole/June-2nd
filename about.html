@@ -204,18 +204,30 @@
     .manufacturer-img{
       flex:1;
       min-width:280px;
-      display:flex;
-      gap:16px;
+      position:relative;
+      aspect-ratio:4/3;
+      overflow:hidden;
+      border:1px solid rgba(0,0,0,.08);
     }
 
     .manufacturer-img img,
     .manufacturer-img video{
       width:100%;
+      height:100%;
       border-radius:0;
       object-fit:cover;
-      aspect-ratio:3/4;
-      border:1px solid rgba(0,0,0,.08);
       display:block;
+    }
+
+    .manufacturer-img video{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      transition:opacity .8s ease;
+    }
+
+    .manufacturer-img video.active{
+      opacity:1;
     }
 
     /* ── Values ── */
@@ -383,7 +395,7 @@
 
   <div class="story">
     <div class="story-video">
-      <img src="https://images.unsplash.com/photo-1779903596788-0004e2a2680c?w=900&auto=format&fit=crop" alt="Group of happy guys outdoors">
+      <img src="https://images.unsplash.com/photo-1704454199634-accedb22d5d2?w=900&auto=format&fit=crop" alt="Group of happy guys outdoors">
     </div>
     <div class="story-text">
       <p class="story-label">How It Started</p>
@@ -411,8 +423,8 @@
         When we set out to bring BeerHole to life, we didn't want something mass-produced and forgettable. Partnering with Piggy Pit means every set that leaves the shop is something we're proud to put our name on.
       </p>
     </div>
-    <div class="manufacturer-img">
-      <video src="our-story.mp4" autoplay muted loop playsinline></video>
+    <div class="manufacturer-img" id="manufacturer-img">
+      <video src="our-story.mp4" autoplay muted loop playsinline class="active"></video>
       <video src="who-makes-it.mp4" autoplay muted loop playsinline></video>
     </div>
   </div>
@@ -440,6 +452,21 @@
   </div>
 
   <footer>© 2026 BeerHole — Built For Building Memories 🍻</footer>
+
+  <script>
+    (function(){
+      const box = document.getElementById('manufacturer-img');
+      if (!box) return;
+      const vids = box.querySelectorAll('video');
+      if (vids.length < 2) return;
+      let current = 0;
+      setInterval(() => {
+        vids[current].classList.remove('active');
+        current = (current + 1) % vids.length;
+        vids[current].classList.add('active');
+      }, 7000);
+    })();
+  </script>
 
 </body>
 </html>
