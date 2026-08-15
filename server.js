@@ -51,18 +51,12 @@ async function fulfillOrder(session) {
   const meta = session.metadata || {};
 
   if (meta.deliveryMethod === 'local') {
-    const preorderNote = meta.preorder === 'true' ? ' (PREORDER — no stock yet, hold delivery until available)' : '';
-    console.log(`📦 LOCAL DELIVERY — order ${session.id}: hand-deliver to ${meta.shipToName}, ${meta.localAddress}${preorderNote}`);
+    console.log(`📦 LOCAL DELIVERY — order ${session.id}: hand-deliver to ${meta.shipToName}, ${meta.localAddress}`);
     return;
   }
 
   if (meta.deliveryMethod !== 'standard') {
     console.warn(`Order ${session.id} has no recognized deliveryMethod ("${meta.deliveryMethod}") — skipping auto label purchase.`);
-    return;
-  }
-
-  if (meta.preorder === 'true') {
-    console.log(`🕓 PREORDER — order ${session.id} (${meta.product}): payment complete, but no label purchased yet since this is a preorder with no stock. Ship to: ${meta.shipToName}, ${meta.shipStreet1}, ${meta.shipCity}, ${meta.shipState} ${meta.shipZip}. Buy the label manually in Shippo once stock is available.`);
     return;
   }
 
@@ -264,14 +258,6 @@ const PACKAGE_INFO = {
   'extra-bags': { length: 6, width: 6, height: 2, weight: 2.5 },
 };
 
-// ─── Preorder products ───────────────────────────────────────────────────────
-// Products currently out of stock but still purchasable as a preorder (full
-// price charged now). For these, we must NOT auto-purchase a Shippo label on
-// checkout completion — there's no physical item to ship yet. The order still
-// goes through normally in Stripe; the shipping address is kept in metadata
-// so a label can be bought manually once stock is available.
-const PREORDER_PRODUCTS = new Set(['complete-set']);
-
 // ─── Live stock tracking (Stripe as source of truth) ─────────────────────────
 // Rather than keep our own counter (which wouldn't survive a server restart
 // on Render's ephemeral filesystem), stock is computed by asking Stripe how
@@ -291,7 +277,7 @@ const STOCK_CONFIG = {
 
 // Counts succeeded payments for a product's current stock batch via Stripe's
 // Search API. Note: Stripe Search has a short indexing delay (usually well
-// under a minute) — under normal preorder volume this is a non-issue, but it
+// under a minute) — at normal sales volume this is a non-issue, but it
 // means two purchases within the same second or two could theoretically both
 // see stock as "available" in a race. Fine at small batch sizes; worth
 // knowing about if this ever needs to scale to high-concurrency drops.
@@ -603,9 +589,8 @@ app.post('/verify-local-address', express.json(), async (req, res) => {
   }
 });
 
-// ─── Create Checkout Session ──────────────────────────────────────────────────
 // ─── Live stock status (read-only, used by the front-end to show/hide the
-// preorder button and display remaining count) ───────────────────────────────
+// buy button and display remaining count) ────────────────────────────────────
 app.get('/stock/:product', async (req, res) => {
   try {
     const product = req.params.product;
@@ -641,7 +626,6 @@ app.post('/create-checkout-session', async (req, res) => {
     }
 
     const deliveryMethod = req.body.deliveryMethod === 'local' ? 'local' : 'standard';
-    const isPreorder = PREORDER_PRODUCTS.has(product);
 
     const sessionConfig = {
       line_items: [
@@ -651,7 +635,7 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.DOMAIN}/success.html?product=${encodeURIComponent(product)}&preorder=${isPreorder}`,
+      success_url: `${process.env.DOMAIN}/success.html?product=${encodeURIComponent(product)}`,
       cancel_url: `${process.env.DOMAIN}/beerhole.html`,
     };
 
@@ -673,7 +657,6 @@ app.post('/create-checkout-session', async (req, res) => {
       sessionConfig.metadata = {
         deliveryMethod: 'local',
         product,
-        preorder: String(isPreorder),
         stockBatch: (STOCK_CONFIG[product] && STOCK_CONFIG[product].batch) || '',
         shipToName: addr.name,
         localAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,
@@ -708,7 +691,6 @@ app.post('/create-checkout-session', async (req, res) => {
       sessionConfig.metadata = {
         deliveryMethod: 'standard',
         product,
-        preorder: String(isPreorder),
         stockBatch: (STOCK_CONFIG[product] && STOCK_CONFIG[product].batch) || '',
         shipToName: addr.name,
         shipToAddress: `${addr.street1}, ${addr.city}, ${addr.state} ${addr.zip}`,

@@ -207,17 +207,17 @@
       color:#fe6901;
     }
 
-    .product-card-preorder{
+    .product-card-stock{
       display:inline-block;
-      background:rgba(254,105,1,.15);
-      color:#fe6901;
+      background:rgba(0,200,100,.15);
+      color:#00c864;
       font-size:.7rem;
       font-weight:800;
       text-transform:uppercase;
       letter-spacing:1px;
       padding:4px 10px;
       border-radius:50px;
-      border:1px solid rgba(254,105,1,.3);
+      border:1px solid rgba(0,200,100,.3);
       margin:0 22px 10px;
     }
 
@@ -397,17 +397,17 @@
       <div class="product-card-media">
         <img src="https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=600&auto=format&fit=crop" alt="Complete Set">
         <div class="product-card-overlay">
-          <button type="button" class="pc-btn pc-quickadd" id="complete-set-quickadd" onclick="quickAdd(event,'complete-set')">Preorder</button>
-          <button type="button" class="pc-btn pc-quickview" onclick="quickView(event,{id:'complete-set',name:'Complete Set',price:'$499.99',desc:'Everything you need to play — boards, bags, discs, and carry bag included. Ships once available.',img:'https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=800&auto=format&fit=crop',link:'complete-set.html'})">Quick View</button>
+          <button type="button" class="pc-btn pc-quickadd" id="complete-set-quickadd" onclick="quickAdd(event,'complete-set')">Quick Add</button>
+          <button type="button" class="pc-btn pc-quickview" onclick="quickView(event,{id:'complete-set',name:'Complete Set',price:'$499.99',desc:'Everything you need to play — boards, bags, discs, and carry bag included.',img:'https://images.unsplash.com/photo-1756239508881-d302bfdcc4b7?w=800&auto=format&fit=crop',link:'complete-set.html'})">Quick View</button>
         </div>
       </div>
-      <span class="product-card-preorder" id="complete-set-badge">● Preorder</span>
+      <span class="product-card-stock" id="complete-set-badge">● In Stock</span>
       <div class="product-card-body">
         <span class="product-card-name">Complete Set</span>
         <span class="product-card-price">$499.99</span>
       </div>
-      <p class="product-card-desc" id="complete-set-desc">Everything you need to play — boards, bags, discs, and carry bag included. Ships once available.</p>
-      <div class="product-card-btn" id="complete-set-btn">Preorder Now</div>
+      <p class="product-card-desc" id="complete-set-desc">Everything you need to play — boards, bags, discs, and carry bag included.</p>
+      <div class="product-card-btn" id="complete-set-btn">View Product</div>
     </a>
 
     <a href="extra-bags.html" class="product-card">
@@ -454,7 +454,7 @@
         <p class="qv-price" id="qv-price"></p>
         <p class="qv-desc" id="qv-desc"></p>
         <a href="#" id="qv-link" class="qv-viewfull">View Full Details →</a>
-        <button type="button" class="pc-btn pc-quickadd" id="qv-quickadd-btn" onclick="quickAdd(event, qvCurrentId)"><span id="qv-quickadd-label">Quick Add</span> — <span id="qv-price-btn"></span></button>
+        <button type="button" class="pc-btn pc-quickadd" id="qv-quickadd-btn" onclick="quickAdd(event, qvCurrentId)">Quick Add — <span id="qv-price-btn"></span></button>
       </div>
     </div>
   </div>
@@ -479,7 +479,6 @@
       document.getElementById('qv-desc').textContent = p.desc;
       document.getElementById('qv-link').href = p.link;
       document.getElementById('qv-quickadd-btn').style.display = p.comingSoon ? 'none' : 'block';
-      document.getElementById('qv-quickadd-label').textContent = p.id === 'complete-set' ? 'Preorder' : 'Quick Add';
       document.getElementById('quickview-modal').classList.add('active');
     }
 
@@ -497,7 +496,7 @@
         const desc = document.getElementById('complete-set-desc');
 
         if (stock.available > 0) {
-          badge.textContent = `● ${stock.available} Left`;
+          badge.textContent = `● ${stock.available} In Stock`;
         } else {
           badge.textContent = '● Out of Stock';
           badge.style.background = 'rgba(255,255,255,.08)';

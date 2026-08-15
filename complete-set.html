@@ -186,27 +186,6 @@
       margin-bottom:28px;
     }
 
-    .preorder-badge{
-      display:inline-block;
-      background:rgba(254,105,1,.15);
-      color:#fe6901;
-      font-size:.85rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:1px;
-      padding:6px 14px;
-      border-radius:50px;
-      border:1px solid rgba(254,105,1,.3);
-      margin-bottom:28px;
-    }
-
-    .ship-note{
-      font-size:.9rem;
-      color:#888;
-      text-align:center;
-      margin-top:14px;
-    }
-
     .buy-btn{
       display:block;
       width:100%;
@@ -283,7 +262,7 @@
       <p class="breadcrumb"><a href="beerhole.html">Home</a> / <a href="shop.html">Shop</a> / Complete Set</p>
       <h1 class="product-name">Complete Set</h1>
       <p class="product-price">$499.99</p>
-      <span class="preorder-badge" id="stock-badge">● Preorder</span>
+      <span class="in-stock" id="stock-badge">● In Stock</span>
       <p class="product-description">
         Everything you need to bring BeerHole™ to your next backyard hangout, tailgate, or pregame. Built for competitive play and built to last.
       </p>
@@ -295,8 +274,7 @@
         <li>Carry bag for easy transport</li>
         <li>Official BeerHole™ rulebook</li>
       </ul>
-      <a href="shipping-quote.html?product=complete-set" class="buy-btn" id="buy-btn" style="text-align:center;text-decoration:none;">Preorder Now — $499.99</a>
-      <p class="ship-note" id="ship-note">Ships once available. You'll be charged today to lock in your set.</p>
+      <a href="shipping-quote.html?product=complete-set" class="buy-btn" id="buy-btn" style="text-align:center;text-decoration:none;">Order Now — $499.99</a>
       <a href="shop.html" class="back-link">← Back to Shop</a>
     </div>
 
@@ -309,11 +287,9 @@
         if (!stock || typeof stock.available !== 'number') return;
         const badge = document.getElementById('stock-badge');
         const btn = document.getElementById('buy-btn');
-        const note = document.getElementById('ship-note');
 
         if (stock.available > 0) {
-          badge.textContent = `● ${stock.available} Left`;
-          note.textContent = "Ships once available. You'll be charged today to lock in your set.";
+          badge.textContent = `● ${stock.available} In Stock`;
         } else {
           badge.textContent = '● Out of Stock';
           badge.style.background = 'rgba(255,255,255,.08)';
@@ -323,7 +299,6 @@
           btn.style.opacity = '.5';
           btn.style.pointerEvents = 'none';
           btn.removeAttribute('href');
-          note.textContent = 'This batch is sold out. Check back soon for more stock.';
         }
       })
       .catch(err => console.error('Stock check failed:', err));
