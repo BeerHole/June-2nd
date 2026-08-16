@@ -139,6 +139,43 @@
       background:#111;
     }
 
+    /* ── Instagram CTA ── */
+    .gameplay-ig{
+      max-width:700px;
+      margin:0 auto;
+      padding:0 8% 100px;
+      text-align:center;
+    }
+
+    .gameplay-ig p{
+      font-size:1.1rem;
+      color:#444;
+      line-height:1.8;
+      margin-bottom:26px;
+    }
+
+    .ig-btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:16px 32px;
+      background:linear-gradient(45deg,#fe6901,#fe6901);
+      color:#fff;
+      font-family:'Inter',sans-serif;
+      font-size:1rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1.5px;
+      border-radius:12px;
+      text-decoration:none;
+      transition:.2s;
+    }
+
+    .ig-btn:hover{
+      transform:translateY(-3px);
+      box-shadow:0 10px 24px rgba(254,105,1,.35);
+    }
+
     footer{
       background:#ffffff;
       border-top:1px solid rgba(0,0,0,.08);
@@ -189,6 +226,14 @@
     <div class="gameplay-card">
       <video src="videos/beerhole-hero.mp4" autoplay muted loop playsinline controls></video>
     </div>
+  </div>
+
+  <div class="gameplay-ig">
+    <p>Tag @beerholeusa on Instagram in your best plays and we may feature your clip here.</p>
+    <a href="https://www.instagram.com/beerholeusa/" target="_blank" rel="noopener" class="ig-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      Follow on Instagram
+    </a>
   </div>
 
   <footer><span style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">© 2026 BeerHole™ — Built For Building Memories <img src="images/cheers-icon.png" alt="" style="width:48px; height:auto; margin:0;"></span></footer>
