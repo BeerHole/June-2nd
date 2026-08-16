@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gameplay — BeerHole™</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    html, body{
+      overflow-x:hidden;
+      max-width:100%;
+    }
+
+    body{
+      font-family:'Inter',sans-serif;
+      background:#ffffff;
+      color:#1a1a1a;
+    }
+
+    /* ── Navbar ── */
+    nav{
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:100;
+      display:flex;
+      align-items:center;
+      gap:30px;
+      padding:18px 5%;
+      background:rgba(255,255,255,0.97);
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+
+    .nav-logo img{ height:55px; display:block; }
+
+    .nav-links{
+      display:flex;
+      gap:24px;
+      list-style:none;
+    }
+
+    .nav-links a{
+      color:#1a1a1a;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      padding-bottom:3px;
+      border-bottom:2px solid transparent;
+      transition:.2s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active{
+      border-bottom-color:#fe6901;
+    }
+
+    .nav-actions{
+      list-style:none;
+      display:flex;
+      gap:18px;
+      margin-left:auto;
+      align-items:center;
+    }
+
+    .nav-actions a{
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      transition:.2s;
+    }
+
+    .nav-actions a:hover{ opacity:.6; }
+
+    /* ── Hero ── */
+    .gameplay-hero{
+      min-height:50vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:140px 8% 60px;
+      background:
+        linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.75)),
+        url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=1600&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+    }
+
+    .gameplay-hero h1{
+      font-family:'Poppins',sans-serif;
+      font-weight:800;
+      font-size:6rem;
+      color:#fe6901;
+      letter-spacing:3px;
+      line-height:1;
+      margin-bottom:20px;
+    }
+
+    .gameplay-hero p{
+      font-size:1.2rem;
+      color:#ddd;
+      max-width:600px;
+      margin:0 auto;
+      line-height:1.8;
+    }
+
+    /* ── Video Grid ── */
+    .gameplay-wall{
+      max-width:1200px;
+      margin:0 auto;
+      padding:80px 8% 100px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+      gap:26px;
+    }
+
+    .gameplay-card{
+      position:relative;
+      border:1px solid rgba(0,0,0,.08);
+      box-shadow:0 4px 20px rgba(0,0,0,.05);
+      overflow:hidden;
+      transition:.3s;
+    }
+
+    .gameplay-card:hover{
+      transform:translateY(-8px);
+      border-color:#fe6901;
+      box-shadow:0 14px 30px rgba(254,105,1,.15);
+    }
+
+    .gameplay-card video{
+      width:100%;
+      aspect-ratio:9/16;
+      object-fit:cover;
+      display:block;
+      background:#111;
+    }
+
+    footer{
+      background:#ffffff;
+      border-top:1px solid rgba(0,0,0,.08);
+      text-align:center;
+      padding:30px;
+      color:#666;
+      font-size:.9rem;
+    }
+
+    @media(max-width:700px){
+      .gameplay-hero h1{ font-size:3.5rem; }
+      nav{ flex-wrap:wrap; gap:8px; padding:12px 5%; }
+      .nav-links{ order:3; width:100%; justify-content:center; flex-wrap:wrap; gap:6px 8px; margin-top:8px; }
+      .nav-links a{ font-size:0.68rem; white-space:nowrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="beerhole.html" class="nav-logo"><img src="images/beerhole-logo-transparent.png" alt="BeerHole™"></a>
+    <ul class="nav-links">
+      <li><a href="beerhole.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="rules.html">Rules</a></li>
+      <li><a href="gameplay.html" class="active">Gameplay</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <ul class="nav-actions">
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </a></li>
+      <li><a href="#">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      </a></li>
+    </ul>
+  </nav>
+
+  <div class="gameplay-hero">
+    <div>
+      <h1>Gameplay</h1>
+      <p>Real people, real backyards, real BeerHole™. Watch the game in action.</p>
+    </div>
+  </div>
+
+  <div class="gameplay-wall">
+    <div class="gameplay-card">
+      <video src="videos/beerhole-hero.mp4" autoplay muted loop playsinline controls></video>
+    </div>
+  </div>
+
+  <footer><span style="display:inline-flex; align-items:center; justify-content:center; gap:8px;">© 2026 BeerHole™ — Built For Building Memories <img src="images/cheers-icon.png" alt="" style="width:48px; height:auto; margin:0;"></span></footer>
+
+</body>
+</html>
