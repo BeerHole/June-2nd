@@ -201,15 +201,10 @@
       line-height:1.9;
     }
 
-    .manufacturer-img-wrap{
+    .manufacturer-img{
       flex:1;
       min-width:280px;
       position:relative;
-    }
-
-    .manufacturer-img{
-      position:relative;
-      width:100%;
       aspect-ratio:4/3;
       overflow:hidden;
       border:1px solid rgba(0,0,0,.08);
@@ -235,23 +230,26 @@
       opacity:1;
     }
 
-    .manufacturer-badge{
-      position:absolute;
-      bottom:-32px;
-      left:-32px;
-      width:150px;
-      height:150px;
-      object-fit:contain;
-      filter:drop-shadow(0 8px 18px rgba(0,0,0,.3));
-      z-index:5;
+    .manufacturer-title-row{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:20px;
     }
 
-    @media(max-width:700px){
-      .manufacturer-badge{
-        width:110px;
-        height:110px;
-        bottom:-18px;
-        left:-18px;
+    .manufacturer-title-row h2{
+      margin-bottom:0;
+    }
+
+    .manufacturer-badge-inline{
+      height:3.5rem;
+      width:auto;
+      flex-shrink:0;
+    }
+
+    @media(max-width:480px){
+      .manufacturer-badge-inline{
+        height:2.6rem;
       }
     }
 
@@ -442,7 +440,10 @@
   <div class="manufacturer">
     <div class="manufacturer-text">
       <p class="story-label">Who Makes It</p>
-      <h2>Piggy Pit Woodworking</h2>
+      <div class="manufacturer-title-row">
+        <h2>Piggy Pit Woodworking</h2>
+        <img src="images/piggy-pit-logo.png" alt="Piggy Pit Woodworking" class="manufacturer-badge-inline">
+      </div>
       <p>
         Every BeerHole™ set is manufactured by Piggy Pit Woodworking — a craftsman operation that is committed to professional level carpentry and quality. Each board is built with exquisite joinery techniques and an impeccable finish. This ensures every set is made to last and made to perform.
       </p>
@@ -450,12 +451,9 @@
         When we set out to bring BeerHole™ to life, we didn't want something mass-produced and forgettable. Partnering with Piggy Pit means every set that leaves the shop is something we're proud to put our name on.
       </p>
     </div>
-    <div class="manufacturer-img-wrap">
-      <div class="manufacturer-img" id="manufacturer-img">
-        <video src="videos/our-story.mp4" autoplay muted loop playsinline class="active"></video>
-        <video src="videos/who-makes-it.mp4" autoplay muted loop playsinline></video>
-      </div>
-      <img src="images/piggy-pit-logo.png" alt="Piggy Pit Woodworking" class="manufacturer-badge">
+    <div class="manufacturer-img" id="manufacturer-img">
+      <video src="videos/our-story.mp4" autoplay muted loop playsinline class="active"></video>
+      <video src="videos/who-makes-it.mp4" autoplay muted loop playsinline></video>
     </div>
   </div>
 
