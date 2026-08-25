@@ -355,6 +355,12 @@
     #rules-wrap::-webkit-scrollbar{ display: none; }
     #rules-grid .feature-card:last-child{ margin-right: 0; }
 
+    #rules-grid .feature-card{
+      height:600px;
+      padding:40px 30px;
+      overflow:hidden;
+    }
+
     .feature-grid-wrap:active{
       cursor: grabbing;
     }
@@ -375,6 +381,13 @@
         flex: 0 0 82vw;
         margin-right: 16px;
         padding: 90px 24px;
+      }
+
+      #rules-grid .feature-card{
+        height:auto;
+        min-height:600px;
+        padding:40px 24px;
+        overflow:visible;
       }
     }
 
