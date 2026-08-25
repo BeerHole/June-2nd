@@ -997,7 +997,7 @@
   <section class="hero" id="hero">
 
     <div class="hero-video-wrap">
-      <video id="hero-video" autoplay muted playsinline>
+      <video id="hero-video" autoplay muted playsinline loop>
         <source src="videos/beerhole-hero.mp4" type="video/mp4">
       </video>
     </div>
@@ -1513,6 +1513,8 @@
     }
 
     heroVideo.addEventListener('playing', () => {
+      if (heroVideo._scheduledSrc === heroVideo.currentSrc) return;
+      heroVideo._scheduledSrc = heroVideo.currentSrc;
       clearTimeout(heroVideo._timer);
       heroVideo._timer = setTimeout(nextVideo, 6000);
     });
