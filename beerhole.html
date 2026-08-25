@@ -997,7 +997,7 @@
   <section class="hero" id="hero">
 
     <div class="hero-video-wrap">
-      <video id="hero-video" autoplay muted playsinline loop>
+      <video id="hero-video" autoplay muted playsinline>
         <source src="videos/beerhole-hero.mp4" type="video/mp4">
       </video>
     </div>
@@ -1516,7 +1516,8 @@
       if (heroVideo._scheduledSrc === heroVideo.currentSrc) return;
       heroVideo._scheduledSrc = heroVideo.currentSrc;
       clearTimeout(heroVideo._timer);
-      heroVideo._timer = setTimeout(nextVideo, 6000);
+      const durationMs = isFinite(heroVideo.duration) ? heroVideo.duration * 1000 : 6000;
+      heroVideo._timer = setTimeout(nextVideo, Math.min(6000, durationMs));
     });
   </script>
 
