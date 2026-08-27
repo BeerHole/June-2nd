@@ -134,6 +134,11 @@
       transform:scale(1.06);
     }
 
+    .product-card-media img.pc-img-contain{
+      object-fit:contain;
+      background:#1a1a1a;
+    }
+
     .product-card-overlay{
       position:absolute;
       left:0; right:0; bottom:0;
@@ -302,6 +307,11 @@
       display:block;
     }
 
+    .qv-modal-content img.qv-img-contain{
+      object-fit:contain;
+      background:#111;
+    }
+
     .qv-info{
       padding:32px 28px;
       display:flex;
@@ -413,7 +423,7 @@
 
     <a href="extra-bags.html" class="product-card">
       <div class="product-card-media">
-        <img src="images/extra-bags-photo.jpg" alt="Extra Bags">
+        <img src="images/extra-bags-photo.jpg" alt="Extra Bags" class="pc-img-contain">
         <div class="product-card-overlay">
           <button type="button" class="pc-btn pc-quickadd" onclick="quickAdd(event,'extra-bags')">Quick Add</button>
           <button type="button" class="pc-btn pc-quickview" onclick="quickView(event,{id:'extra-bags',name:'Extra Bags',price:'$19.99',desc:'Regulation-sized bean bags built for consistent tossing and outdoor durability.',img:'images/extra-bags-photo.jpg',link:'extra-bags.html'})">Quick View</button>
@@ -473,7 +483,9 @@
       e.preventDefault();
       e.stopPropagation();
       qvCurrentId = p.id;
-      document.getElementById('qv-img').src = p.img;
+      const qvImgEl = document.getElementById('qv-img');
+      qvImgEl.src = p.img;
+      qvImgEl.classList.toggle('qv-img-contain', p.id === 'extra-bags');
       document.getElementById('qv-name').textContent = p.name;
       document.getElementById('qv-price').textContent = p.price;
       document.getElementById('qv-price-btn').textContent = p.price;
